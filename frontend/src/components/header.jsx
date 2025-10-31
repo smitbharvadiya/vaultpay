@@ -1,0 +1,49 @@
+
+
+const Header = ({ setOpenSignUp, setOpenLogin, isLogin, setIsLogin }) => {
+
+    const handleLogout = async () => {
+        const res = await fetch("http://localhost:5000/logout", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            credentials: "include"
+        })
+
+        const data = await res.json();
+        console.log(data);
+
+    }
+
+    return (
+      <div className="sticky top-0 left-0 w-full flex justify-between items-center px-8 py-4 bg-white shadow-sm z-50">
+            <h1 className="text-2xl font-bold text-blue-600">VaultPay</h1>
+            <div className="flex gap-4">
+                <button
+                    onClick={() => setOpenSignUp(true)}
+                    className="px-4 py-2 border rounded bg-blue-600 text-white hover:bg-blue-700">
+                    Sign Up
+                </button>
+                {!isLogin && <button
+                    onClick={() => setOpenLogin(true)}
+                    className="px-4 py-2 border rounded hover:bg-gray-100">
+                    Login
+                </button>}
+                {isLogin && <button
+                    onClick={async () => {
+                        await handleLogout();
+                        setIsLogin(false);
+                    }}
+
+                    className="px-4 py-2 border rounded hover:bg-gray-100">
+                    Logout
+                </button>}
+
+            </div>
+
+        </div>
+    )
+}
+
+export default Header;
