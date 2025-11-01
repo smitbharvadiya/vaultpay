@@ -1,10 +1,11 @@
-import express, { json } from 'express';
+import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import bcrypt, { hash } from 'bcrypt';
+import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import cookieParser from 'cookie-parser';
 import userModel from '../models/user.js';
+import apiKeyRoutes from '../routes/apiKeyRoute.js';
 
 dotenv.config();
 
@@ -12,6 +13,7 @@ const app = express();
 
 app.use(cors({
     origin: "http://localhost:5173",
+    secure: false, // true in production (HTTPS)
     credentials: true
 }));
 app.use(express.json());
@@ -24,8 +26,8 @@ app.get('/', (req, res) => {
 app.post('/signup', async (req, res) => {
     const { email, password } = req.body;
 
-    const existingUser = await userModel.findOne({email});
-    if(existingUser){
+    const existingUser = await userModel.findOne({ email });
+    if (existingUser) {
         return res.status(400).json({ message: "Email already exists. Please log in." });
     }
 
@@ -38,9 +40,9 @@ app.post('/signup', async (req, res) => {
                 });
 
                 const token = jwt.sign(
-                    {email : createdUser.email},
+                    { id: createdUser._id, email: createdUser.email },
                     process.env.JWT_SECRET,
-                    {expiresIn: '1h'}
+                    { expiresIn: '1h' }
                 );
 
                 res.cookie("token", token);
@@ -51,9 +53,9 @@ app.post('/signup', async (req, res) => {
                     token: token
                 });
 
-            }catch(err){
+            } catch (err) {
                 console.log(err);
-                res.status(500).json({message: 'Error Creating User',err});
+                res.status(500).json({ message: 'Error Creating User', err });
             }
         });
     });
@@ -61,33 +63,40 @@ app.post('/signup', async (req, res) => {
 });
 
 app.post("/login", async (req, res) => {
-    const user = await userModel.findOne({email: req.body.email})
-    if(!user) return res.status(400).json({message: "User Not Found!"});
+    try {
+        const user = await userModel.findOne({ email: req.body.email })
+        if (!user) return res.status(400).json({ message: "User Not Found!" });
 
-    bcrypt.compare(req.body.password, user.password, function(err, result){
-        if(result){
-            const token = jwt.sign(
-                {email : user.email},
-                process.env.JWT_SECRET,
-                {expiresIn: '1h'}
-            );
+        const isMatch = await bcrypt.compare(req.body.password, user.password);
 
-            res.cookie("token", token);
-
-            res.status(200).json({ message: "User matched" });
-        }else{
-            res.status(500).json({ message: "Error Login", error: err });
+        if (!isMatch) {
+            return res.status(401).json({ message: "Invalid password!" });
         }
-    });
+
+        const token = jwt.sign(
+            { id: user._id, email: user.email },
+            process.env.JWT_SECRET,
+            { expiresIn: '1h' }
+        );
+        res.cookie("token", token);
+
+        return res.status(200).json({ message: "Login successful" });
+
+    } catch (err) {
+        console.log("Login Error: ", err);
+        return res.status(500).json({ message: "Internal server error" });
+    }
 });
 
 app.post("/logout", (req, res) => {
     res.clearCookie("token");
-    res.json({message: "Logout Succesfull"});
+    res.json({ message: "Logout Succesfull" });
 });
 
 app.use('/api/payments', (req, res) => {
     res.json({ message: 'Payments route works!' });
 });
+
+app.use("/api/keys", apiKeyRoutes);
 
 export default app;
