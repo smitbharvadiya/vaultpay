@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const SignUp = ({ openSignUp, setOpenSignUp, setIsLogin }) => {
+const SignUp = ({ openSignUp, setOpenSignUp, setIsLogin, setOpenLogin }) => {
     if (!openSignUp) return null;
 
     const navigator = useNavigate();
@@ -90,6 +90,18 @@ const SignUp = ({ openSignUp, setOpenSignUp, setIsLogin }) => {
                         {message}
                     </div>
                 )}
+
+                <div className="flex text-sm text-gray-600 text-center gap-1">
+                    <div>Already have account? </div>
+                    <button
+                        onClick={() => {
+                            setOpenLogin(true);
+                            setOpenSignUp(false);
+                        }}
+                        className="text-blue-600 cursor-pointer hover:underline hover:text-blue-700 transition">
+                        Login
+                    </button>
+                </div>
                 
             </div>
         </div>

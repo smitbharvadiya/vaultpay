@@ -93,6 +93,19 @@ app.post("/logout", (req, res) => {
     res.json({ message: "Logout Succesfull" });
 });
 
+app.get("/checkAuth", (req, res) => {
+    const token = req.cookies.token;
+    if(!token) return res.json({ isAuthenticated: false });
+
+    try{
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        res.json({ isAuthenticated : true, user : decoded});
+    }catch(err){
+        res.json({ isAuthenticated : false});
+    }
+    
+})
+
 app.use('/api/payments', (req, res) => {
     res.json({ message: 'Payments route works!' });
 });
