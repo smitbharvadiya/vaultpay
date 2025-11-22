@@ -39,7 +39,7 @@ const SignUp = ({ openSignUp, setOpenSignUp, setIsLogin, setOpenLogin }) => {
             setMessage("Account created successfully! 🎉");
             setTimeout(() => {
                 setOpenSignUp(false);
-                navigator("/dashboard");
+                navigator("/home");
             }, 2000);
             setIsLogin(true);
 

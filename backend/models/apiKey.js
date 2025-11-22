@@ -7,6 +7,10 @@ const apiSchema = new mongoose.Schema({
         ref: "User",
         required: true
     },
+    name: {
+        type: String,
+        required: true,
+    },
     key: {
         type: String,
         required: true,
@@ -22,4 +26,4 @@ const apiSchema = new mongoose.Schema({
     }
 })
 
-export default mongoose.model("ApiKeyModel", apiSchema);
+export default mongoose.model("ApiKey", apiSchema);

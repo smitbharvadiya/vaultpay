@@ -30,7 +30,7 @@ const Header = ({ setOpenSignUp, setOpenLogin, isLogin, setIsLogin }) => {
 
     return (
         <div className="sticky top-0 left-0 w-full flex justify-between items-center px-8 py-4 bg-white shadow-sm z-50">
-            <h1 className="text-2xl font-bold text-blue-600">VaultPay</h1>
+            <a href="/" className="text-2xl font-bold text-blue-600">VaultPay</a>
                 {!isLogin && 
                 <div className="flex gap-4">
                     <button

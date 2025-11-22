@@ -38,7 +38,7 @@ const Login = ({ openLogin, setOpenLogin, setIsLogin, setOpenSignUp }) => {
             setMessage("✅ Login succesfully");
             setTimeout(() => {
                 setOpenLogin(false);
-                navigator("/dashboard");
+                navigator("/home");
             }, 2000);
 
             setIsLogin(true);

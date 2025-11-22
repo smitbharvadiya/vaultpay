@@ -1,12 +1,14 @@
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Main from './pages/Main';
-import Dashboard from './pages/Dashboard';
 import Header from './components/header';
 import SignUp from './components/signup';
 import Login from './components/login';
 import './App.css'
 import { useState } from 'react';
 import { useEffect } from 'react';
+import CreateKey from './components/createKeyBox';
+import ApiKey from './components/apiKeys';
+import DashboardLayout from './pages/DashboardLayout';
 
 function App() {
 
@@ -47,7 +49,12 @@ function App() {
 
         <Routes>
           <Route path="/" element={<Main setOpenLogin={setOpenLogin} />} />
-          <Route path="/dashboard" element={<Dashboard />} />
+          <Route element={<DashboardLayout />}>
+            <Route path="/dashboard" element={<CreateKey />} />
+            <Route path="/apikey/create" element={<CreateKey />} />
+            <Route path="/apikey" element={<ApiKey />} />
+          </Route>
+
         </Routes>
       </Router>
     </>
