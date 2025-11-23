@@ -9,6 +9,7 @@ import { useEffect } from 'react';
 import CreateKey from './components/createKeyBox';
 import ApiKey from './components/apiKeys';
 import DashboardLayout from './pages/DashboardLayout';
+import ProtectedRoutes from '../utils/ProtectedRoutes';
 
 function App() {
 
@@ -48,8 +49,12 @@ function App() {
         <Login openLogin={openLogin} setOpenLogin={setOpenLogin} setIsLogin={setIsLogin} setOpenSignUp={setOpenSignUp} />
 
         <Routes>
-          <Route path="/" element={<Main setOpenLogin={setOpenLogin} />} />
-          <Route element={<DashboardLayout />}>
+          <Route path="/" element={<Main isLogin={isLogin} setOpenLogin={setOpenLogin} />} />
+          <Route element={
+            <ProtectedRoutes isLogin={isLogin}>
+              <DashboardLayout />
+            </ProtectedRoutes>
+          }>
             <Route path="/dashboard" element={<CreateKey />} />
             <Route path="/apikey/create" element={<CreateKey />} />
             <Route path="/apikey" element={<ApiKey />} />

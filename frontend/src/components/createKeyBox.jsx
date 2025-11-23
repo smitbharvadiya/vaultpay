@@ -39,10 +39,10 @@ const CreateKey = () => {
 
     return (
         <div className="p-8">
-            <div className="flex items-center gap-2 text-gray-700 pb-4">
+            <div className="flex items-center gap-1 text-gray-700 pb-4">
                 <span
                     onClick={() => navigate("/apikey")}
-                    className="cursor-pointer hover:text-black transition flex items-center"
+                    className="cursor-pointer hover:text-black transition flex items-center pr-2"
                 >
                     <GoArrowLeft size={20} />
                 </span>

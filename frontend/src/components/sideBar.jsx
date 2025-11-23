@@ -15,7 +15,6 @@ const SideBar = () => {
 
     return (
         <div className="h-screen w-60 flex flex-col p-4 bg-white border-r">
-            <h2 className="text-2xl font-bold mb-6">VaultPay</h2>
 
             <ul className="flex flex-col gap-2">
                 {menuItems.map((item) => {
