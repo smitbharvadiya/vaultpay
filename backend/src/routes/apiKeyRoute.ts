@@ -23,7 +23,6 @@ router.post("/generate", verifyToken, async (req, res) => {
 
         const hashedKey = crypto.createHash("sha256").update(rawKey).digest("hex");
 
-
         const createdKey = await ApiKey.create({
             userId: req.userId,
             name,

@@ -1,31 +1,40 @@
 
-import mongoose from "mongoose";
+import mongoose, { Schema, Document} from "mongoose";
 
-const apiSchema = new mongoose.Schema({
-    userId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-        required: true
-    },
-    name: {
-        type: String,
-        required: true,
-    },
-    key: {
-        type: String,
-        required: true,
-        unique: true,
-    },
-    createdAt: {
-        type: Date,
-        default: Date.now,
-    },
-    active: {
-        type: Boolean,
-        default: true,
-    }
-});
+export interface IApiKey extends Document {
+    userId: mongoose.Types.ObjectId,
+    name: string;
+    key: string;
+    active: boolean;
+    createdAt: Date;
+}
 
-apiSchema.index({ userId: 1, name: 1}, {unique: true});
+const apiSchema = new Schema<IApiKey>(
+    {
+        userId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User",
+            required: true
+        },
+        name: {
+            type: String,
+            required: true,
+        },
+        key: {
+            type: String,
+            required: true,
+            unique: true,
+        },
+        createdAt: {
+            type: Date,
+            default: Date.now,
+        },
+        active: {
+            type: Boolean,
+            default: true,
+        }
+    });
 
-export default mongoose.model("ApiKey", apiSchema);
+apiSchema.index({ userId: 1, name: 1 }, { unique: true });
+
+export default mongoose.model<IApiKey>("ApiKey", apiSchema);
