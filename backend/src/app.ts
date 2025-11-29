@@ -1,19 +1,20 @@
+
+import dotenv from 'dotenv';
+dotenv.config();
+
 import express from 'express';
 import cors from 'cors';
-import dotenv from 'dotenv';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import cookieParser from 'cookie-parser';
-import userModel from '../models/user.js';
-import apiKeyRoutes from '../routes/apiKeyRoute.js';
-
-dotenv.config();
+import userModel from './models/user';
+import apiKeyRoutes from './routes/apiKeyRoute';
+import paymentRoutes from './routes/paymentRoutes';
 
 const app = express();
 
 app.use(cors({
     origin: "http://localhost:5173",
-    secure: false, // true in production (HTTPS)
     credentials: true
 }));
 app.use(express.json());
@@ -41,7 +42,7 @@ app.post('/signup', async (req, res) => {
 
                 const token = jwt.sign(
                     { id: createdUser._id, email: createdUser.email },
-                    process.env.JWT_SECRET,
+                    process.env.JWT_SECRET!,
                     { expiresIn: '1h' }
                 );
 
@@ -75,7 +76,7 @@ app.post("/login", async (req, res) => {
 
         const token = jwt.sign(
             { id: user._id, email: user.email },
-            process.env.JWT_SECRET,
+            process.env.JWT_SECRET!,
             { expiresIn: '1h' }
         );
         res.cookie("token", token);
@@ -98,7 +99,7 @@ app.get("/checkAuth", (req, res) => {
     if(!token) return res.json({ isAuthenticated: false });
 
     try{
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const decoded = jwt.verify(token, process.env.JWT_SECRET!);
         res.json({ isAuthenticated : true, user : decoded});
     }catch(err){
         res.json({ isAuthenticated : false});
@@ -111,5 +112,6 @@ app.use('/api/payments', (req, res) => {
 });
 
 app.use("/api/keys", apiKeyRoutes);
+app.use("/api/payment", paymentRoutes)
 
 export default app;

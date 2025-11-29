@@ -35,7 +35,7 @@ const Header = ({ setOpenSignUp, setOpenLogin, isLogin, setIsLogin }) => {
                 <div className="flex gap-4">
                     <button
                     onClick={() => setOpenSignUp(true)}
-                    className="px-4 py-2 border rounded bg-blue-600 text-white hover:bg-blue-700">
+                    className="px-4 py-2 border rounded bg-black text-white hover:bg-gray-800">
                     Sign Up
                 </button>
                  <button

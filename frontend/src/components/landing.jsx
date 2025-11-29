@@ -19,7 +19,7 @@ const Landing = ({setOpenLogin}) => {
 
         <button
           onClick={handleGenerateKey}
-          className="px-6 py-3 bg-blue-600 text-white rounded-lg text-lg hover:bg-blue-700 transition-all"
+          className="px-6 py-3 bg-black text-white rounded-lg text-lg hover:bg-gray-800 transition-all"
         >
           Generate API Key
         </button>

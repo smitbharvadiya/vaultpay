@@ -1,7 +1,7 @@
 import express from "express";
 import crypto from "crypto";
-import verifyToken from "../middleware/verifyToken.js";
-import ApiKey from "../models/apiKey.js";
+import verifyToken from "../middleware/verifyToken";
+import ApiKey from "../models/apiKey";
 
 const router = express.Router();
 
