@@ -4,8 +4,8 @@ import { BsThreeDotsVertical } from "react-icons/bs";
 import { useLocation, useNavigate } from "react-router-dom";
 
 const ApiKey = () => {
-    const [copied, setCopied] = useState(false);
     const [apiKeys, setApiKeys] = useState([]);
+    const [error, setError] = useState("");
 
     const location = useLocation();
     const navigate = useNavigate();
@@ -34,13 +34,6 @@ const ApiKey = () => {
 
     }, []);
 
-
-
-    const handleCopy = (key) => {
-        navigator.clipboard.writeText(key);
-        setCopied(true);
-        setTimeout(() => setCopied(false), 2000);
-    }
 
     return (
         <div className="p-8 text-gray-900">
@@ -95,16 +88,8 @@ const ApiKey = () => {
                                 apiKeys.map((key, index) => (
                                     <tr key={index} className="border-b">
                                         <td className="py-2">{key.name}</td>
-                                        <td className="py-2 font-mono text-gray-700">{key.key}</td>
+                                        <td className="py-2 font-mono text-gray-700">{key.keyMasked}</td>
                                         <td className="py-2">{new Date(key.createdAt).toLocaleDateString()}</td>
-                                        <td className="py-2 ">
-                                            <button
-                                                onClick={() => handleCopy(key.key)}
-                                                className={`text-sm cursor-pointer ${copied ? "text-green-600" : "text-blue-600 hover:text-blue-800"
-                                                    }`}>
-                                                {copied ? "Copied" : "Copy"}
-                                            </button>
-                                        </td>
                                     </tr>
                                 )))}
                         </tbody>

@@ -24,6 +24,8 @@ const apiSchema = new mongoose.Schema({
         type: Boolean,
         default: true,
     }
-})
+});
+
+apiSchema.index({ userId: 1, name: 1}, {unique: true});
 
 export default mongoose.model("ApiKey", apiSchema);
