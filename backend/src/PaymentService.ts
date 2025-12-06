@@ -22,10 +22,10 @@ export class PaymentService {
         const saved = await paymentModel.create({
             userId: params.userId,
             provider,
-            amount: paymentResult.amount,
+            orderId: paymentResult.orderId,
+            amount: paymentResult.amount / 100,
             currency: paymentResult.currency,
             status: paymentResult.status,
-            paymentId: paymentResult.paymentId,
             raw: paymentResult.raw,
         });
 

@@ -40,8 +40,8 @@ const SignUp = ({ openSignUp, setOpenSignUp, setIsLogin, setOpenLogin }) => {
             setTimeout(() => {
                 setOpenSignUp(false);
                 navigator("/dashboard");
+                setIsLogin(true);
             }, 2000);
-            setIsLogin(true);
 
         } catch (err) {
             console.log("Error: ", err);

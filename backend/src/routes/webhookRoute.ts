@@ -26,7 +26,7 @@ router.post("/:provider",  express.raw({ type: "*/*" }), (req: any, res: any) =>
     const event = adapter.verifyWebhook(req);     
     console.log("Signature verified!");
 
-    // const normalized = adapter.normalizeWebhook(event);
+    const normalized = adapter.normalizeWebhook(event);
     // console.log("Normalized event: ", normalized);
 
     // Future: store in DB, update payment status

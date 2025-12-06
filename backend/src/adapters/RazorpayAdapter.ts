@@ -23,7 +23,7 @@ export class RazorpayAdapter implements ProviderAdaptor {
     }) {
 
         const order = await this.client.orders.create({
-            amount: params.amount,
+            amount: params.amount * 100,
             currency: params.currency,
             notes: params.metadata,
         });
@@ -42,7 +42,7 @@ export class RazorpayAdapter implements ProviderAdaptor {
         };
 
         return {
-            paymentId: order.id,
+            orderId: order.id,
             amount: Number(order.amount),
             currency: order.currency,
             provider: "razorpay",
@@ -65,26 +65,48 @@ export class RazorpayAdapter implements ProviderAdaptor {
         return JSON.parse(JSON.stringify(webhookBody))
     }
 
-    // async normalizeWebhook(event: any) {
-    //     console.log(event);
-    //     const payment = event.payload.payment.entity;
+    async normalizeWebhook(event: any) {
+        console.log(event);
+        console.log(event.payload.payment.entity);
 
-    //     switch (event.event) {
-    //         case "payment.captured":
-    //             await paymentModel.findOneAndUpdate(
-    //                 {order})
-    //             break;
-    //         case "payment.failed":
-    //             // mark payment failed
-    //             break;
+        const payment = event.payload.payment.entity;
+        let status: "SUCCESS" | "FAILED" | "PENDING" = "PENDING";
 
-    //         case "order.paid":
-    //             // order is fully paid
-    //             break;
+        switch (event.event) {
+            case "payment.captured":
+                status = "SUCCESS";
+                await paymentModel.findOneAndUpdate(
+                    { orderId: payment.order_id },
+                    {
+                        paymentId: payment.id,
+                        status,
+                        amount: payment.amount / 100,
+                        raw: event,
+                    });
+                console.log("Payment updated in DB!");
+                break;
 
-    //         default:
-    //             console.log("Unhandled event:", event);
-    //     }
-    // }
+            case "payment.failed":
+                // mark payment failed
+                break;
+
+            case "order.paid":
+                // order is fully paid
+                break;
+
+            default:
+                console.log("Unhandled event:", event);
+        }
+
+        return {
+            provider: "razorpay",
+            orderId: payment.order_id,
+            paymentId: payment.id,
+            amount: payment.amount / 100,
+            currency: payment.currency,
+            status,
+        };
+
+    }
 
 }

@@ -4,7 +4,8 @@ import mongoose, { Schema, Document } from "mongoose";
 export interface IPayments extends Document {
     userId: mongoose.Types.ObjectId,
     provider: string,
-    paymentId: string,
+    orderId: string,
+    paymentId?: string,
     amount: number,
     currency: string,
     status: string
@@ -21,9 +22,12 @@ const paymentSchema = new Schema<IPayments>({
         type: String,
         required: true,
     },
-    paymentId: {
+    orderId: {
         type: String,
         required: true,
+    },
+    paymentId: {
+        type: String,
     },
     amount: {
         type: Number,

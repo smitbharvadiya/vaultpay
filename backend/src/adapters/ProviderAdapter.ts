@@ -7,7 +7,7 @@ export interface ProviderAdaptor {
         currency: string;
         metadata: Record<string, any>
     }): Promise<{
-        paymentId: string;
+        orderId: string;
         amount: number;
         currency: string;
         provider: string;
@@ -17,6 +17,6 @@ export interface ProviderAdaptor {
 
     verifyWebhook(req: any): any;
 
-    // normalizeWebhook(event: any): any;
+    normalizeWebhook(event: any): any;
     
 }
