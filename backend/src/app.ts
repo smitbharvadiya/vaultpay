@@ -10,6 +10,8 @@ import cookieParser from 'cookie-parser';
 import userModel from './models/user';
 import apiKeyRoutes from './routes/apiKeyRoute';
 import paymentRoutes from './routes/paymentRoutes';
+import { validateWebhookSignature } from 'razorpay/dist/utils/razorpay-utils';
+import webhookRoute from './routes/webhookRoute';
 
 const app = express();
 
@@ -17,8 +19,31 @@ app.use(cors({
     origin: "http://localhost:5173",
     credentials: true
 }));
+
+
 app.use(express.json());
 app.use(cookieParser());
+
+app.use("/webhook", webhookRoute);
+app.use("/api/keys", apiKeyRoutes);
+app.use("/api/payment", paymentRoutes);
+
+app.use("/webhook/razorpay", (req, res) => {
+    const webhookBody = req.body;
+    const webhookSignature = req.get("X-Razorpay-Signature") as string;
+
+    const webhookSecret = process.env.RAZORPAY_WEBHOOK_SECRET as string;
+
+    if(!validateWebhookSignature(JSON.stringify(webhookBody), webhookSignature, webhookSecret)){
+        console.log("Signature validation failed!");
+        return res.status(400).json({ error: "Invalid signature" });
+    }
+
+    console.log("Signature validation successfull!");
+
+    return res.status(200).json({success: "Signature verified succesfully"});
+});
+
 
 app.get('/', (req, res) => {
     res.send('Vault API is running...');
@@ -96,22 +121,20 @@ app.post("/logout", (req, res) => {
 
 app.get("/checkAuth", (req, res) => {
     const token = req.cookies.token;
-    if(!token) return res.json({ isAuthenticated: false });
+    if (!token) return res.json({ isAuthenticated: false });
 
-    try{
+    try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET!);
-        res.json({ isAuthenticated : true, user : decoded});
-    }catch(err){
-        res.json({ isAuthenticated : false});
+        res.json({ isAuthenticated: true, user: decoded });
+    } catch (err) {
+        res.json({ isAuthenticated: false });
     }
-    
+
 })
 
 app.use('/api/payments', (req, res) => {
     res.json({ message: 'Payments route works!' });
 });
 
-app.use("/api/keys", apiKeyRoutes);
-app.use("/api/payment", paymentRoutes)
 
 export default app;

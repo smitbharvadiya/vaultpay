@@ -1,6 +1,9 @@
 
 import Razorpay from "razorpay";
 import { ProviderAdaptor } from "./ProviderAdapter";
+import crypto from "crypto";
+import { validateWebhookSignature } from "razorpay/dist/utils/razorpay-utils";
+import paymentModel from "../models/paymentModel";
 
 export class RazorpayAdapter implements ProviderAdaptor {
 
@@ -48,5 +51,40 @@ export class RazorpayAdapter implements ProviderAdaptor {
         }
     };
 
+    verifyWebhook(req: any) {
+        const webhookBody = req.body
+        const webhookSignature = req.get("X-Razorpay-Signature") as string
+        const webhookSecret = process.env.RAZORPAY_WEBHOOK_SECRET as string
+
+        if (!validateWebhookSignature(JSON.stringify(webhookBody), webhookSignature, webhookSecret)) {
+            console.log("Signature validation failed!")
+            throw new Error("Invalid Razorpay webhook signature")
+        }
+
+        console.log("Signature validation successful!")
+        return JSON.parse(JSON.stringify(webhookBody))
+    }
+
+    // async normalizeWebhook(event: any) {
+    //     console.log(event);
+    //     const payment = event.payload.payment.entity;
+
+    //     switch (event.event) {
+    //         case "payment.captured":
+    //             await paymentModel.findOneAndUpdate(
+    //                 {order})
+    //             break;
+    //         case "payment.failed":
+    //             // mark payment failed
+    //             break;
+
+    //         case "order.paid":
+    //             // order is fully paid
+    //             break;
+
+    //         default:
+    //             console.log("Unhandled event:", event);
+    //     }
+    // }
 
 }

@@ -14,5 +14,9 @@ export interface ProviderAdaptor {
         status: "pending" | "created" | "failed" | "success";
         raw: any;
     }>
+
+    verifyWebhook(req: any): any;
+
+    // normalizeWebhook(event: any): any;
     
 }
