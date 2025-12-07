@@ -31,4 +31,21 @@ export class PaymentService {
 
         return saved;
     }
+
+    static async getPaymentStatus(orderId: string) {
+        const payment = await paymentModel.findOne({ orderId });
+
+        if (!payment) {
+            throw new Error("Payment not found");
+        }
+
+        return {
+            orderId: payment.orderId,
+            provider: payment.provider,
+            amount: payment.amount,
+            currency: payment.currency,
+            status: payment.status,
+            metadata: payment.raw,
+        }
+    }
 }
