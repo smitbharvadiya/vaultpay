@@ -51,6 +51,44 @@ export class RazorpayAdapter implements ProviderAdaptor {
         }
     };
 
+   async refundPayment(params: {
+    paymentId: string;
+    amount?: number;
+    speed?: "normal" | "optimum";
+}) {
+    try {
+        // Build refund params dynamically
+        const refundParams: any = {
+            speed: params.speed || "normal",
+        };
+
+        if (params.amount !== undefined) {
+            refundParams.amount = params.amount * 100;
+        }
+
+        const refund = await this.client.payments.refund(params.paymentId, refundParams);
+
+        const mapStatus = (s: string) => {
+            if (s === "processed") return "success";
+            if (s === "pending") return "pending";
+            return "failed";
+        };
+
+        return {
+            refundId: refund.id,
+            amount: refund.amount !== undefined ? refund.amount / 100 : 0,
+            currency: refund.currency,
+            status: mapStatus(refund.status),
+            raw: refund,
+        };
+
+    } catch (err: any) {
+        console.error("Razorpay refund error:", err);
+        throw new Error("Refund Failed: " + JSON.stringify(err));
+    }
+}
+
+
     verifyWebhook(req: any) {
         const webhookBody = req.body
         const webhookSignature = req.get("X-Razorpay-Signature") as string

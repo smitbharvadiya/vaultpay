@@ -15,6 +15,18 @@ export interface ProviderAdaptor {
         raw: any;
     }>
 
+    refundPayment(params: {
+        paymentId: string,
+        amount?: number,
+        speed?: "normal" | "optimum",
+    }): Promise<{
+        refundId: string;
+        amount: number;
+        currency: string;
+        status: string;
+        raw: any;
+    }>
+
     verifyWebhook(req: any): any;
 
     normalizeWebhook(event: any): any;
