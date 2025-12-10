@@ -51,42 +51,42 @@ export class RazorpayAdapter implements ProviderAdaptor {
         }
     };
 
-   async refundPayment(params: {
-    paymentId: string;
-    amount?: number;
-    speed?: "normal" | "optimum";
-}) {
-    try {
-        // Build refund params dynamically
-        const refundParams: any = {
-            speed: params.speed || "normal",
-        };
+    async refundPayment(params: {
+        paymentId: string;
+        amount?: number;
+        speed?: "normal" | "optimum";
+    }) {
+        try {
+            // Build refund params dynamically
+            const refundParams: any = {
+                speed: params.speed || "normal",
+            };
 
-        if (params.amount !== undefined) {
-            refundParams.amount = params.amount * 100;
+            if (params.amount !== undefined) {
+                refundParams.amount = params.amount * 100;
+            }
+
+            const refund = await this.client.payments.refund(params.paymentId, refundParams);
+
+            const mapStatus = (s: string) => {
+                if (s === "processed") return "success";
+                if (s === "pending") return "pending";
+                return "failed";
+            };
+
+            return {
+                refundId: refund.id,
+                amount: refund.amount !== undefined ? refund.amount / 100 : 0,
+                currency: refund.currency,
+                status: mapStatus(refund.status),
+                raw: refund,
+            };
+
+        } catch (err: any) {
+            console.error("Razorpay refund error:", err);
+            throw new Error("Refund Failed: " + JSON.stringify(err));
         }
-
-        const refund = await this.client.payments.refund(params.paymentId, refundParams);
-
-        const mapStatus = (s: string) => {
-            if (s === "processed") return "success";
-            if (s === "pending") return "pending";
-            return "failed";
-        };
-
-        return {
-            refundId: refund.id,
-            amount: refund.amount !== undefined ? refund.amount / 100 : 0,
-            currency: refund.currency,
-            status: mapStatus(refund.status),
-            raw: refund,
-        };
-
-    } catch (err: any) {
-        console.error("Razorpay refund error:", err);
-        throw new Error("Refund Failed: " + JSON.stringify(err));
     }
-}
 
 
     verifyWebhook(req: any) {
@@ -108,11 +108,32 @@ export class RazorpayAdapter implements ProviderAdaptor {
         console.log(event.payload.payment.entity);
 
         const payment = event.payload.payment.entity;
-        let status: "SUCCESS" | "FAILED" | "PENDING" = "PENDING";
+        let status:
+        | "CREATED"
+        | "ATTEMPTED"
+        | "AUTHORIZED"
+        | "CAPTURED"
+        | "FAILED"
+        | "EXPIRED"
+        = "ATTEMPTED";
 
         switch (event.event) {
+
+            case "payment.authorized": 
+                    status = "AUTHORIZED";
+                    await paymentModel.findOneAndUpdate(
+                    { orderId: payment.order_id },
+                    {
+                        paymentId: payment.id,
+                        status,
+                        amount: payment.amount / 100,
+                        raw: event,
+                    });
+                console.log("Payment updated in DB!");
+                break;
+
             case "payment.captured":
-                status = "SUCCESS";
+                status = "CAPTURED";
                 await paymentModel.findOneAndUpdate(
                     { orderId: payment.order_id },
                     {
@@ -124,16 +145,22 @@ export class RazorpayAdapter implements ProviderAdaptor {
                 console.log("Payment updated in DB!");
                 break;
 
-            case "payment.failed":
-                // mark payment failed
-                break;
-
-            case "order.paid":
-                // order is fully paid
-                break;
+           case "payment.failed":
+            status = "FAILED";
+            await paymentModel.findOneAndUpdate(
+                { orderId: payment.order_id },
+                {
+                    paymentId: payment.id,
+                    status,
+                    amount: payment.amount / 100,
+                    raw: event,
+                }
+            );
+            console.log("payment.failed saved");
+            break;
 
             default:
-                console.log("Unhandled event:", event);
+                console.log("Unhandled event:", event.event);
         }
 
         return {
