@@ -6,6 +6,11 @@ mongoose.connect("mongodb://localhost:27017/vaultpay");
 export interface IUser extends Document{
     email: string;
     password: string;
+    tier: string;
+    apiKeyLimit: number;
+    apiKeyCooldown: number;
+    apiKeyCount: number;
+    lastKeyGeneratedAt: Date;
 }
 
 const userSchema = new Schema<IUser>(
@@ -20,7 +25,28 @@ const userSchema = new Schema<IUser>(
         password: {
             type: String,
             required: true,
-        }
+        },
+        tier: {
+            type: String,
+            enum: ["FREE", "PRO", "ENTERPRISE"],
+            default: "FREE",
+        },
+        apiKeyLimit: {
+            type: Number,
+            default: 1,
+        },
+        apiKeyCooldown: {
+            type: Number,
+            default: 168,
+        },
+        apiKeyCount: {
+            type: Number,
+            default: 0,
+        },
+        lastKeyGeneratedAt: { 
+            type: Date, 
+            default: null 
+        },
     },
     { timestamps: true }
 );
