@@ -28,22 +28,6 @@ app.use("/webhook", webhookRoute);
 app.use("/api/keys", apiKeyRoutes);
 app.use("/api/payment", paymentRoutes);
 
-app.use("/webhook/razorpay", (req, res) => {
-    const webhookBody = req.body;
-    const webhookSignature = req.get("X-Razorpay-Signature") as string;
-
-    const webhookSecret = process.env.RAZORPAY_WEBHOOK_SECRET as string;
-
-    if(!validateWebhookSignature(JSON.stringify(webhookBody), webhookSignature, webhookSecret)){
-        console.log("Signature validation failed!");
-        return res.status(400).json({ error: "Invalid signature" });
-    }
-
-    console.log("Signature validation successfull!");
-
-    return res.status(200).json({success: "Signature verified succesfully"});
-});
-
 
 app.get('/', (req, res) => {
     res.send('Vault API is running...');
@@ -70,6 +54,7 @@ app.post('/signup', async (req, res) => {
                     process.env.JWT_SECRET!,
                     { expiresIn: '1h' }
                 );
+                console.log("JWT Token: ", token);
 
                 res.cookie("token", token);
 
