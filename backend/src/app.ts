@@ -10,7 +10,6 @@ import cookieParser from 'cookie-parser';
 import userModel from './models/user';
 import apiKeyRoutes from './routes/apiKeyRoute';
 import paymentRoutes from './routes/paymentRoutes';
-import { validateWebhookSignature } from 'razorpay/dist/utils/razorpay-utils';
 import webhookRoute from './routes/webhookRoute';
 
 const app = express();
@@ -27,7 +26,6 @@ app.use(cookieParser());
 app.use("/webhook", webhookRoute);
 app.use("/api/keys", apiKeyRoutes);
 app.use("/api/payment", paymentRoutes);
-
 
 app.get('/', (req, res) => {
     res.send('Vault API is running...');

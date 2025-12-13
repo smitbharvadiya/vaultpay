@@ -3,6 +3,7 @@ import crypto from "crypto";
 import verifyToken from "../middleware/verifyToken";
 import ApiKey from "../models/apiKey";
 import userModel from "../models/user";
+import redis from "../redis";
 
 const router = express.Router();
 
@@ -23,16 +24,16 @@ router.post("/generate", verifyToken, async (req, res) => {
             });
         };
 
-        if(user.lastKeyGeneratedAt){
-            const hoursPassed = ( Date.now() - user.lastKeyGeneratedAt.getTime() ) / (60 * 60 * 1000);
-            if(hoursPassed < user.apiKeyCooldown){
-                const remaining = (user.apiKeyCooldown - hoursPassed).toFixed(1);
-                return res.status(400).json({
+        const cooldownKey = `cooldown:user:${userId}`;
+        const cooldownExists = await redis.get(cooldownKey);
+
+        if(cooldownExists){
+            const ttl = await redis.ttl(cooldownKey);
+            return res.status(400).json({
                 success: false,
-                message: `Cooldown active. Try again in ${remaining} hours`,
-            });
-            }
-        };
+                message: `Cooldown active. Try again in ${(ttl/3600).toFixed(2)} hours`,
+            })
+        }
 
         const { name } = req.body;
 
@@ -58,6 +59,8 @@ router.post("/generate", verifyToken, async (req, res) => {
         user.apiKeyCount += 1;
         user.lastKeyGeneratedAt = new Date();
         await user.save();
+
+        await redis.set(cooldownKey, "1", { EX: user.apiKeyCooldown });
 
         return res.status(201).json({
             success: true,

@@ -33,11 +33,11 @@ const userSchema = new Schema<IUser>(
         },
         apiKeyLimit: {
             type: Number,
-            default: 1,
+            default: 3,
         },
         apiKeyCooldown: {
             type: Number,
-            default: 168,
+            default: 86400,
         },
         apiKeyCount: {
             type: Number,
