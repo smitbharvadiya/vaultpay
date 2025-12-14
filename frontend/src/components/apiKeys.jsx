@@ -2,12 +2,12 @@ import { useState, useEffect } from "react";
 import { FiSearch } from "react-icons/fi";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { useLocation, useNavigate } from "react-router-dom";
+import { MdDelete } from "react-icons/md";
 
 const ApiKey = () => {
     const [apiKeys, setApiKeys] = useState([]);
     const [error, setError] = useState("");
 
-    const location = useLocation();
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -16,15 +16,14 @@ const ApiKey = () => {
                 const res = await fetch("http://localhost:5000/api/keys/list", {
                     method: "GET",
                     credentials: "include",
-
                 })
 
                 if (!res.ok) {
-                    throw new Error("Failed to fetch API keys")
+                    throw new Error("Failed to fetch API keys");
                 }
 
-                const data = await res.json()
-                setApiKeys(data.apiKeys || [])
+                const data = await res.json();
+                setApiKeys(data.apiKeys || []);
 
             } catch (error) {
                 console.log("ERROR: ", error);
@@ -33,6 +32,28 @@ const ApiKey = () => {
         fetchKeys();
 
     }, []);
+
+    const handleKeyDelete = async (id) => {
+        if (!confirm("Are you sure you want to delete this API key?")) return;
+
+        try{
+            const res = await fetch(`http://localhost:5000/api/keys/delete/${id}`, {
+                method: "DELETE",
+                credentials: "include",
+            });
+
+            const data = await res.json();
+
+            if(!res.ok){
+                throw new Error(data.message || "Deletion Failed");
+            };
+
+            setApiKeys(prev => prev.filter(key => key.id !== id));
+
+        }catch(err){
+            console.error("Delete error:", err);
+        }
+    }
 
 
     return (
@@ -85,11 +106,12 @@ const ApiKey = () => {
                                     </td>
                                 </tr>
                             ) : (
-                                apiKeys.map((key, index) => (
-                                    <tr key={index} className="border-b">
+                                apiKeys.map((key) => (
+                                    <tr key={key.id} className="border-b">
                                         <td className="py-2">{key.name}</td>
                                         <td className="py-2 font-mono text-gray-700">{key.keyMasked}</td>
                                         <td className="py-2">{new Date(key.createdAt).toLocaleDateString()}</td>
+                                        <td onClick={() => handleKeyDelete(key.id)} className="py-2 cursor-pointer"><MdDelete size={18}/></td>
                                     </tr>
                                 )))}
                         </tbody>

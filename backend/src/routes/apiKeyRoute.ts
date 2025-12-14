@@ -4,6 +4,7 @@ import verifyToken from "../middleware/verifyToken";
 import ApiKey from "../models/apiKey";
 import userModel from "../models/user";
 import redis from "../redis";
+import apiKey from "../models/apiKey";
 
 const router = express.Router();
 
@@ -27,11 +28,11 @@ router.post("/generate", verifyToken, async (req, res) => {
         const cooldownKey = `cooldown:user:${userId}`;
         const cooldownExists = await redis.get(cooldownKey);
 
-        if(cooldownExists){
+        if (cooldownExists) {
             const ttl = await redis.ttl(cooldownKey);
             return res.status(400).json({
                 success: false,
-                message: `Cooldown active. Try again in ${(ttl/3600).toFixed(2)} hours`,
+                message: `Cooldown active. Try again in ${(ttl / 3600).toFixed(2)} hours`,
             })
         }
 
@@ -93,5 +94,36 @@ router.get("/list", verifyToken, async (req, res) => {
     }
 
 });
+
+router.delete("/delete/:id", verifyToken, async (req, res) => {
+    try {
+        const keyId = req.params.id;
+
+        const deletedKey = await apiKey.findOneAndDelete({
+            _id: keyId,
+            userId: req.userId,
+        });
+
+        if (!deletedKey) {
+            return res.status(404).json({ message: "API key not found" });
+        }
+
+        await userModel.findOneAndUpdate(
+            { _id: req.userId, apiKeyCount: { $gt: 0 } },
+            { $inc: { apiKeyCount: -1 } }
+        );
+
+        return res.status(200).json({
+            success: true,
+            message: "API key deleted successfully",
+        });
+
+    } catch (err) {
+        res.status(500).json({
+            success: false,
+            message: "Server error",
+        });
+    }
+})
 
 export default router;
