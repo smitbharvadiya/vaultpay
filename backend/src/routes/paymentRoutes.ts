@@ -4,14 +4,10 @@ import express from 'express';
 import { PaymentService } from "../PaymentService";
 import verifyApiKey from '../middleware/verifyApiKey';
 import paymentModel from '../models/paymentModel';
-import rateLimit from '../middleware/rateLimit';
 
 const router = express.Router();
 
-router.use(verifyApiKey);
-router.use(rateLimit);
-
-router.post("/create", async (req, res) => {
+router.post("/create", verifyApiKey, async (req, res) => {
     try {
         const { provider, amount, currency, metadata } = req.body;
 
@@ -36,7 +32,7 @@ router.post("/create", async (req, res) => {
 })
 
 // Get payment status
-router.get("/status/:id", async (req, res) => {
+router.get("/status/:id", verifyApiKey, async (req, res) => {
     const orderId = req.params.id;
 
     try {
@@ -50,7 +46,7 @@ router.get("/status/:id", async (req, res) => {
     }
 });
 
-router.post("/refund", async (req, res) => {
+router.post("/refund", verifyApiKey, async (req, res) => {
     try {
         const { paymentId, amount, speed } = req.body;
 
