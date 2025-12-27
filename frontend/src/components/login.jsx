@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { IoCloseOutline } from "react-icons/io5";
 
 const Login = ({ openLogin, setOpenLogin, setIsLogin, setOpenSignUp }) => {
     if (!openLogin) return null;
 
-    const navigator = useNavigate();
+    const navigate = useNavigate();
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -16,98 +17,111 @@ const Login = ({ openLogin, setOpenLogin, setIsLogin, setOpenSignUp }) => {
         try {
             const res = await fetch("http://localhost:5000/login", {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email, password }),
                 credentials: "include",
-
             });
+
             const data = await res.json();
 
             if (!res.ok) {
                 setIsError(true);
-                setMessage(data.message || "Login failed. Try Again Later!");
-                console.error("❌ Login failed:", data.message);
+                setMessage(data.message || "Login failed. Try again.");
                 return;
             }
-            console.log("Login succesfull");
-            console.log("✅ Response:", data);
 
             setIsError(false);
-            setMessage("✅ Login succesfully");
+            setMessage("Logged in successfully.");
             setTimeout(() => {
                 setOpenLogin(false);
-                navigator("/dashboard");
                 setIsLogin(true);
-            }, 2000);
-
-
-        } catch (err) {
-            console.log("Error: ", err);
+                navigate("/dashboard");
+            }, 1200);
+        } catch {
             setIsError(true);
             setMessage("Something went wrong. Please try again.");
         }
-
-
     };
 
     return (
-        <div className="fixed inset-0 flex justify-center items-center bg-black/40 z-50">
-            <div className="w-80 flex flex-col justify-center items-center gap-2 rounded-md bg-white p-4">
-                <div className="w-full flex justify-between pb-6">
-                    <h2 className="text-xl font-semibold text-gray-800">Login</h2>
-                    <div
-                        onClick={() => setOpenLogin(false)}
-                        className="text-gray-500 hover:text-red-500 cursor-pointer transition-transform hover:scale-110">
-                        ✕
-                    </div>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+            <div className="relative w-[360px] rounded-2xl bg-white px-6 py-7 border border-black/10">
+
+                {/* Close */}
+                <button
+                    onClick={() => setOpenLogin(false)}
+                    className="absolute top-4 right-4 text-slate-400 hover:text-slate-900 transition-colors p-1 hover:bg-slate-100 rounded-full"
+                >
+                    <IoCloseOutline size={24} />
+                </button>
+
+                {/* Header */}
+                <div className="text-center mb-6">
+                    <h1 className="text-xl font-semibold text-black tracking-tight">
+                        Welcome back
+                    </h1>
+                    <p className="mt-1 text-sm text-black/60">
+                        Log in and get back to building.
+                    </p>
                 </div>
-                <form onSubmit={handleSubmit} className="flex flex-col gap-4 mt-2">
+
+                {/* Form */}
+                <form onSubmit={handleSubmit} className="space-y-4">
                     <input
                         type="email"
-                        placeholder="email"
+                        placeholder="Email address"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        className="border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                        className="w-full rounded-lg border border-black/15 px-3 py-2.5 text-sm
+                       focus:outline-none focus:border-black transition"
                         required
                     />
+
                     <input
                         type="password"
-                        placeholder="password"
-                        className="border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                        placeholder="Password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
+                        className="w-full rounded-lg border border-black/15 px-3 py-2.5 text-sm
+                       focus:outline-none focus:border-black transition"
                         required
                     />
+
                     <button
-                        type="Submit"
-                        className="bg-blue-600 text-white cursor-pointer font-medium rounded-lg py-2 mt-2 hover:bg-blue-700 transition-all shadow-md hover:shadow-lg">
+                        type="submit"
+                        className="w-full rounded-lg bg-black py-2.5 text-sm font-medium
+                       text-white hover:bg-black/90 transition cursor-pointer"
+                    >
                         Login
                     </button>
                 </form>
 
+                {/* Message */}
                 {message && (
-                    <div className={`text-sm mt-2 ${isError ? "text-red-500" : "text-green-600"}`}>
+                    <p
+                        className={`mt-4 text-center text-sm ${isError ? "text-red-500" : "text-green-600"
+                            }`}
+                    >
                         {message}
-                    </div>
+                    </p>
                 )}
 
-                <div className="flex text-sm text-gray-600 text-center gap-1">
-                    <div>New User? </div>
+                {/* Footer */}
+                <div className="mt-6 flex justify-center gap-1 text-sm text-black/60">
+                    <span>New to VaultPay?</span>
                     <button
                         onClick={() => {
                             setOpenLogin(false);
                             setOpenSignUp(true);
                         }}
-                        className="text-blue-600 cursor-pointer hover:underline hover:text-blue-700 transition">
-                        Register
+                        className="font-medium text-black hover:underline cursor-pointer"
+                    >
+                        Create an account
                     </button>
                 </div>
-
             </div>
         </div>
-    )
-}
+    );
+};
 
 export default Login;
