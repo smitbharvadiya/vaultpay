@@ -15,36 +15,12 @@ const Header = ({ setOpenSignUp, setOpenLogin, isLogin, setIsLogin }) => {
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
 
-    const handleLogout = async () => {
-
-        try {
-            const res = await fetch("http://localhost:5000/logout", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                credentials: "include"
-            })
-
-            const data = await res.json();
-            console.log(data);
-
-            if (res.ok) {
-                setIsLogin(false);
-                navigator("/");
-            }
-        } catch (err) {
-            console.error("Logout error:", err);
-        }
-
-    }
-
     return (
         <div 
-            className={`fixed top-0 left-0 w-full flex justify-between items-center px-8 z-50 transition-all duration-300 font-jakarta py-4
+            className={`fixed top-0 left-0 w-full flex justify-between items-center px-8 z-50 transition-all duration-300 font-jakarta py-4 bg-white/70
             ${isScrolled 
-                ? "bg-white/70 backdrop-blur-xl border-b border-[#dfdfdf] shadow-sm" 
-                : "bg-transparent border-b-0 border-transparent"
+                ? "backdrop-blur-xl border-b border-[#dfdfdf] shadow-sm" 
+                : "border-b-0 border-transparent"
             }`}
         >
             <a href="/" className="text-2xl font-bold">VaultPay</a>
@@ -62,15 +38,6 @@ const Header = ({ setOpenSignUp, setOpenLogin, isLogin, setIsLogin }) => {
                         Sign Up
                     </button>
                 </div>}
-            {isLogin && <button
-                onClick={async () => {
-                    await handleLogout();
-                    setIsLogin(false);
-                }}
-
-                className="px-6 py-2 border rounded-full bg-black text-white hover:bg-zinc-800 transition-all duration-200 cursor-pointer">
-                Logout
-            </button>}
         </div>
     )
 }

@@ -1,14 +1,14 @@
 import SideBar from "../components/sideBar";
 import { Outlet } from "react-router-dom";
 
-const DashboardLayout = () => {
+const DashboardLayout = ({ setIsLogin }) => {
   return (
-    <div className="flex">
+    <div className="flex h-screen overflow-hidden pt-16">
       {/* Sidebar */}
-      <SideBar />
+      <SideBar setIsLogin={setIsLogin} />
 
       {/* Page Content */}
-      <div className="flex-1 bg-gray-50 min-h-screen">
+      <div className="flex-1 overflow-y-auto bg-gray-50">
         <Outlet />
       </div>
     </div>

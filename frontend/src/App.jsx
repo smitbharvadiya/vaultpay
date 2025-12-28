@@ -52,7 +52,7 @@ function App() {
           <Route path="/" element={<Main isLogin={isLogin} setOpenLogin={setOpenLogin} />} />
           <Route element={
             <ProtectedRoutes isLogin={isLogin}>
-              <DashboardLayout />
+              <DashboardLayout setIsLogin={setIsLogin} />
             </ProtectedRoutes>
           }>
             <Route path="/dashboard" element={<CreateKey />} />
