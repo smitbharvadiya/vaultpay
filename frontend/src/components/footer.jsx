@@ -1,4 +1,5 @@
 import { FaGithub, FaXTwitter, FaLinkedinIn } from "react-icons/fa6";
+import logo from "../assets/VaultPayLogo.png";
 
 const Footer = () => {
   return (
@@ -11,7 +12,7 @@ const Footer = () => {
           {/* Brand Column */}
           <div className="col-span-2 lg:col-span-2">
             <a href="/" className="text-2xl font-bold tracking-tighter text-slate-900 font-bricolage mb-4 block">
-              Vault<span className="text-[#00786f]">Pay</span>
+              <img src={logo} alt="VaultPay" className="h-7" />
             </a>
             <p className="text-slate-500 text-sm max-w-xs leading-relaxed mb-6">
               The unified abstraction layer for modern payments. Integrate once, scale everywhere.

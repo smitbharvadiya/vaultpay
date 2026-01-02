@@ -116,7 +116,7 @@ const SignUp = ({ openSignUp, setOpenSignUp, setIsLogin, setOpenLogin }) => {
                         }}
                         className="font-medium text-black hover:underline cursor-pointer"
                     >
-                        Sign in
+                        Login
                     </button>
                 </div>
             </div>

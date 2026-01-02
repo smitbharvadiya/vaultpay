@@ -11,6 +11,7 @@ import userModel from './models/user';
 import apiKeyRoutes from './routes/apiKeyRoute';
 import paymentRoutes from './routes/paymentRoutes';
 import webhookRoute from './routes/webhookRoute';
+import analyticsRoute from './routes/analyticsRoute';
 
 const app = express();
 
@@ -26,6 +27,7 @@ app.use(cookieParser());
 app.use("/webhook", webhookRoute);
 app.use("/api/keys", apiKeyRoutes);
 app.use("/api/payment", paymentRoutes);
+app.use("/analytics", analyticsRoute);
 
 app.get('/', (req, res) => {
     res.send('Vault API is running...');

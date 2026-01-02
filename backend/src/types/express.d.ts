@@ -4,6 +4,9 @@ declare global{
             userId?: string;
             userTier?: string;
             provider?: string;
+            apiKey?: {
+                id:string,
+            }
         }
     }
 }

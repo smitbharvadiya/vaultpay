@@ -27,7 +27,10 @@ const verifyApiKey = async (req: Request, res: Response, next: NextFunction) => 
             });
         }
 
-        req.userId = apiKey.userId.toString();
+        req.userId = apiKey.userId.toString(),
+        req.apiKey = {
+            id: apiKey.id.toString(),
+        };
 
         next();
 

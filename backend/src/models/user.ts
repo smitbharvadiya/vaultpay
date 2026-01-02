@@ -37,7 +37,7 @@ const userSchema = new Schema<IUser>(
         },
         apiKeyCooldown: {
             type: Number,
-            default: 86400,
+            default: 5, //86400
         },
         apiKeyCount: {
             type: Number,

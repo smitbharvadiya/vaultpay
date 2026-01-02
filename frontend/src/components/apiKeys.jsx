@@ -60,7 +60,7 @@ const ApiKey = () => {
         <div className="p-8 text-gray-900">
 
             {/* Page Title */}
-            <h1 className="text-3xl font-semibold mb-6">API Keys</h1>
+            <h1 className="text-xl font-medium mb-6">API Keys</h1>
 
             <div className="bg-white shadow-sm border border-gray-200 rounded-lg p-6">
 

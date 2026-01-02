@@ -10,12 +10,14 @@ import CreateKey from './components/createKeyBox';
 import ApiKey from './components/apiKeys';
 import DashboardLayout from './pages/DashboardLayout';
 import ProtectedRoutes from '../utils/ProtectedRoutes';
+import Analytics from './components/analytics';
 
 function App() {
 
   const [openSignUp, setOpenSignUp] = useState(false);
   const [openLogin, setOpenLogin] = useState(false);
   const [isLogin, setIsLogin] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
 
@@ -33,12 +35,18 @@ function App() {
 
       } catch (err) {
         console.error("Auth check failed:", err);
+      }finally{
+        setLoading(false);
       }
     };
 
     checkAuth();
 
   }, []);
+
+  if (loading) {
+    return <div className="flex h-screen items-center justify-center">Loading...</div>;
+  }
 
   return (
     <>
@@ -58,6 +66,8 @@ function App() {
             <Route path="/dashboard" element={<CreateKey />} />
             <Route path="/apikey/create" element={<CreateKey />} />
             <Route path="/apikey" element={<ApiKey />} />
+            <Route path="/analytics" element={<Analytics />} />
+            {/* <Route path="/docs" element={<Docs />} /> */}
           </Route>
 
         </Routes>

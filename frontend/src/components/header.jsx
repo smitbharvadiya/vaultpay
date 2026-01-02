@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
+import logo from "../assets/VaultPayLogo.png";
 
 const Header = ({ setOpenSignUp, setOpenLogin, isLogin, setIsLogin }) => {
     const navigator = useNavigate();
@@ -23,7 +23,9 @@ const Header = ({ setOpenSignUp, setOpenLogin, isLogin, setIsLogin }) => {
                 : "border-b-0 border-transparent"
             }`}
         >
-            <a href="/" className="text-2xl font-bold">VaultPay</a>
+            <a href="/">
+                <img src={logo} alt="VaultPay" className="h-7" />
+            </a>
             {!isLogin &&
                 <div className="flex gap-6 text-sm font-semibold">
                     <button

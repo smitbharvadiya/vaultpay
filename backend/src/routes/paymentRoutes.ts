@@ -4,15 +4,19 @@ import express from 'express';
 import { PaymentService } from "../PaymentService";
 import verifyApiKey from '../middleware/verifyApiKey';
 import rateLimit from '../middleware/rateLimit';
+import RequestLogger from '../middleware/reqLogger';
 
 const router = express.Router();
 
 router.use(verifyApiKey);
 router.use(rateLimit);
+router.use(RequestLogger);
 
 router.post("/create", async (req, res) => {
     try {
         const { provider, amount, currency, metadata } = req.body;
+            
+        res.locals.gateway = provider;
 
         const payment = await PaymentService.createPayment(provider, {
             amount,
@@ -41,6 +45,8 @@ router.get("/status/:id", async (req, res) => {
     try {
         const payment = await PaymentService.getPaymentStatus(req.params.id);
 
+        res.locals.gateway = payment.provider;
+
         return res.status(200).json({ success: true, data: payment });
 
     } catch (err: any) {
@@ -58,6 +64,8 @@ router.post("/refund", async (req, res) => {
         }
 
         const refund = await PaymentService.refundPayment({ paymentId, amount, speed });
+
+        res.locals.gateway = refund.provider;
 
         return res.json({ success: true, data: refund });
 

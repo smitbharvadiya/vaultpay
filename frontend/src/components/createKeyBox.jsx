@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { GoArrowLeft } from "react-icons/go";
 import { useNavigate } from "react-router-dom";
-import { FiClipboard, FiCheck, FiKey, FiEye, FiEyeOff } from "react-icons/fi";
+import { FiClipboard, FiCheck, FiKey } from "react-icons/fi";
 import { IoClose } from "react-icons/io5";
 
 
@@ -58,41 +58,38 @@ const CreateKey = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-6">
+        <div className="min-h-screen bg-[#fafafa]">
             {/* Backdrop Overlay */}
             {showModal && (
                 <div className="fixed inset-0 backdrop-blur-sm z-40 transition-opacity duration-300" />
             )}
 
+            <div className="flex items-center text-sm gap-2 text-gray-600 mb-4 border-b border-[#dfdfdf] p-3">
+                <button
+                    onClick={() => navigate("/apikey")}
+                    className="hover:text-black hover:-translate-x-0.5 transition-transform cursor-pointer"
+                >
+                    <GoArrowLeft size={20} />
+                </button>
+                <span className="font-medium text-gray-600">API Keys</span>
+                <span className="text-gray-900">/</span>
+                <span className="text-gray-900 font-semibold">Create</span>
+            </div>
+
             {/* Main Content */}
-            <div className={`max-w-2xl mx-auto transition-all duration-300 ${showModal ? "scale-95 opacity-50 pointer-events-none" : "scale-100 opacity-100"}`}>
+            <div className={`px-6 transition-all duration-300 ${showModal ? "scale-95 opacity-50 pointer-events-none" : "scale-100 opacity-100"}`}>
                 {/* Header */}
                 <div className="mb-8">
-                    <div className="flex items-center gap-2 text-gray-600 mb-4">
-                        <button
-                            onClick={() => navigate("/apikey")}
-                            className="flex items-center gap-2 p-2 rounded-lg hover:bg-white hover:shadow-sm transition-all duration-200 group"
-                        >
-                            <GoArrowLeft size={20} className="group-hover:-translate-x-0.5 transition-transform" />
-                        </button>
-                        <span className="font-medium text-gray-900">API Keys</span>
-                        <span className="text-gray-400">/</span>
-                        <span className="text-gray-700 font-semibold">Create New</span>
-                    </div>
 
-                    <div className="flex items-center gap-3">
-                        <div className="p-3 bg-blue-500 rounded-xl shadow-lg">
-                            <FiKey className="text-white text-xl" />
-                        </div>
-                        <div>
-                            <h1 className="text-3xl font-bold text-gray-900">Create API Key</h1>
-                            <p className="text-gray-500 mt-1">Generate a new secret key for API access</p>
-                        </div>
+
+                    <div className="border-b border-[#dfdfdf] pb-6">
+                        <h1 className="font-inter text-xl font-medium text-gray-900">Create API Key</h1>
+                        <p className="text-gray-500 mt-1">Generate a new secret key for API access</p>
                     </div>
                 </div>
 
                 {/* Form Card */}
-                <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-8 backdrop-blur-sm">
+                <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
                     <form onSubmit={handleGenerateKey} className="space-y-4">
                         <div>
                             <label className="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
@@ -118,7 +115,7 @@ const CreateKey = () => {
                         <button
                             type="submit"
                             disabled={loading || !name.trim()}
-                            className={`w-full py-3 px-6 rounded-xl font-semibold transition-all duration-200 flex items-center justify-center gap-2 ${loading || !name.trim()
+                            className={`font-inter text-sm py-2 px-4 rounded-full font-medium transition-all duration-200 ${loading || !name.trim()
                                 ? "bg-gray-300 text-gray-500 cursor-not-allowed"
                                 : "bg-black text-white hover:bg-gray-800 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
                                 }`}
@@ -130,7 +127,6 @@ const CreateKey = () => {
                                 </>
                             ) : (
                                 <>
-                                    <FiKey className="text-lg" />
                                     Create API Key
                                 </>
                             )}
@@ -180,7 +176,7 @@ const CreateKey = () => {
 
                         {copied && (
                             <div className="text-green-600 text-sm font-medium mt-1 text-center animate-fade-in">
-                                ✓ Copied to clipboard!
+                                Copied
                             </div>
                         )}
 

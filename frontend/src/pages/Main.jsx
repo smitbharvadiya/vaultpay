@@ -8,7 +8,6 @@ export default function Main({isLogin, setOpenLogin}) {
     return <Navigate to="/dashboard" replace />;
   }
   
-
   return (
     <>
       <Landing setOpenLogin={setOpenLogin} />
