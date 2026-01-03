@@ -11,6 +11,7 @@ import ApiKey from './components/apiKeys';
 import DashboardLayout from './pages/DashboardLayout';
 import ProtectedRoutes from '../utils/ProtectedRoutes';
 import Analytics from './components/analytics';
+import Docs from './components/docs';
 
 function App() {
 
@@ -58,6 +59,7 @@ function App() {
 
         <Routes>
           <Route path="/" element={<Main isLogin={isLogin} setOpenLogin={setOpenLogin} />} />
+          <Route path="/docs" element={<Docs />} />
           <Route element={
             <ProtectedRoutes isLogin={isLogin}>
               <DashboardLayout setIsLogin={setIsLogin} />
@@ -67,7 +69,6 @@ function App() {
             <Route path="/apikey/create" element={<CreateKey />} />
             <Route path="/apikey" element={<ApiKey />} />
             <Route path="/analytics" element={<Analytics />} />
-            {/* <Route path="/docs" element={<Docs />} /> */}
           </Route>
 
         </Routes>

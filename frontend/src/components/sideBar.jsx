@@ -1,5 +1,4 @@
 import { FaTachometerAlt, FaKey, FaChartBar, FaCog, FaSignOutAlt } from "react-icons/fa";
-import { FaBook } from "react-icons/fa6";
 import { useNavigate, useLocation } from "react-router-dom";
 
 const SideBar = ({ setIsLogin }) => {
@@ -9,6 +8,10 @@ const SideBar = ({ setIsLogin }) => {
     const handleLogout = async () => {
 
         try {
+
+            const confirmLogout = window.confirm("Are you sure you want to logout of VaultPay?");
+
+            if (!confirmLogout) return;
 
             localStorage.removeItem("selectedApiKey");
 
@@ -37,7 +40,6 @@ const SideBar = ({ setIsLogin }) => {
         { name: "Dashboard", icon: <FaTachometerAlt />, path: "/dashboard" },
         { name: "API Keys", icon: <FaKey />, path: "/apikey" },
         { name: "Analytics", icon: <FaChartBar />, path: "/analytics" },
-        { name: "Docs", icon: <FaBook />, path: "/docs" },
     ];
 
     const bottomItems = [

@@ -1,4 +1,5 @@
 import { FaGithub, FaXTwitter, FaLinkedinIn } from "react-icons/fa6";
+import Docs from "./docs";
 import logo from "../assets/VaultPayLogo.png";
 
 const Footer = () => {
@@ -34,7 +35,7 @@ const Footer = () => {
           <div>
             <h4 className="text-sm font-semibold text-slate-900 mb-6">Resources</h4>
             <ul className="space-y-4 text-sm text-slate-500 font-inter">
-              <li><a href="#" className="hover:text-black transition-colors">Documentation</a></li>
+              <li><a href="/docs" className="hover:text-black transition-colors">Documentation</a></li>
               <li><a href="#" className="hover:text-black transition-colors">API Reference</a></li>
               <li><a href="#" className="hover:text-black transition-colors">Community</a></li>
               <li><a href="#" className="hover:text-black transition-colors">Status</a></li>
