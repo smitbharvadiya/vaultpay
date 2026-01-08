@@ -3,6 +3,7 @@ import mongoose, { Schema, Document } from "mongoose";
 
 export interface IPayments extends Document {
     userId: mongoose.Types.ObjectId,
+    apiKeyId: mongoose.Types.ObjectId,
     provider: string,
     orderId: string,
     paymentId?: string,
@@ -16,6 +17,11 @@ const paymentSchema = new Schema<IPayments>({
     userId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
+        required: true,
+    },
+    apiKeyId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "ApiKey",
         required: true,
     },
     provider: {

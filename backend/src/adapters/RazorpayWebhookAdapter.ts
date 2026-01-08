@@ -5,17 +5,17 @@ import { WebhookAdapter } from "./ProviderAdapter";
 export class RazorpayWebhookAdapter implements WebhookAdapter {
 
   verifyWebhook(req: any) {
-        const webhookBody = req.body
-        const webhookSignature = req.get("X-Razorpay-Signature") as string
-        const webhookSecret = process.env.RAZORPAY_WEBHOOK_SECRET as string
+        const webhookBody = req.body;
+        const webhookSignature = req.get("X-Razorpay-Signature") as string;
+        const webhookSecret = process.env.RAZORPAY_WEBHOOK_SECRET as string;
 
         if (!validateWebhookSignature(JSON.stringify(webhookBody), webhookSignature, webhookSecret)) {
-            console.log("Signature validation failed!")
-            throw new Error("Invalid Razorpay webhook signature")
+            console.log("Signature validation failed!");
+            throw new Error("Invalid Razorpay webhook signature");
         }
 
-        console.log("Signature validation successful!")
-        return JSON.parse(JSON.stringify(webhookBody))
+        console.log("Signature validation successful!");
+        return JSON.parse(JSON.stringify(webhookBody));
     }
 
     async normalizeWebhook(event: any) {
@@ -29,7 +29,6 @@ export class RazorpayWebhookAdapter implements WebhookAdapter {
             | "AUTHORIZED"
             | "CAPTURED"
             | "FAILED"
-            | "EXPIRED"
             = "ATTEMPTED";
 
         switch (event.event) {

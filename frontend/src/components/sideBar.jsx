@@ -1,4 +1,5 @@
 import { FaTachometerAlt, FaKey, FaChartBar, FaCog, FaSignOutAlt } from "react-icons/fa";
+import { RiSecurePaymentFill } from "react-icons/ri";
 import { MdOutlinePayments } from "react-icons/md";
 import { useNavigate, useLocation } from "react-router-dom";
 
@@ -9,7 +10,6 @@ const SideBar = ({ setIsLogin }) => {
     const handleLogout = async () => {
 
         try {
-
             const confirmLogout = window.confirm("Are you sure you want to logout of VaultPay?");
 
             if (!confirmLogout) return;
@@ -41,7 +41,8 @@ const SideBar = ({ setIsLogin }) => {
         { name: "Dashboard", icon: <FaTachometerAlt />, path: "/dashboard" },
         { name: "API Keys", icon: <FaKey />, path: "/apikey" },
         { name: "Analytics", icon: <FaChartBar />, path: "/analytics" },
-        { name: "Gateways", icon: <MdOutlinePayments />, path: "/gateways" },
+        { name: "Gateways", icon: <RiSecurePaymentFill />, path: "/gateways" },
+        { name: "Payments", icon: <MdOutlinePayments />, path: "/Payments" },
     ];
 
     const bottomItems = [

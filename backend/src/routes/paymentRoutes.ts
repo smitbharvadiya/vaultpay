@@ -15,7 +15,7 @@ router.use(RequestLogger);
 router.post("/create", async (req, res) => {
     try {
         const { provider, amount, currency, metadata } = req.body;
-            
+
         res.locals.gateway = provider;
 
         const payment = await PaymentService.createPayment(provider, {
@@ -23,6 +23,7 @@ router.post("/create", async (req, res) => {
             currency,
             metadata,
             userId: req.userId,
+            apiKeyId: req.apiKey?.id,
         });
 
         return res.json({
@@ -77,5 +78,6 @@ router.post("/refund", async (req, res) => {
         });
     }
 });
+
 
 export default router;

@@ -9,6 +9,7 @@ export class PaymentService {
         currency: string,
         metadata: Record<string, any>,
         userId?: string,
+        apiKeyId?: string,
     }) {
         const adaptorFactory = providerRegistry[provider];
 
@@ -22,6 +23,7 @@ export class PaymentService {
 
         const saved = await paymentModel.create({
             userId: params.userId,
+            apiKeyId: params.apiKeyId,
             provider,
             orderId: paymentResult.orderId,
             amount: paymentResult.amount / 100,

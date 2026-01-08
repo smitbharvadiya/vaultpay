@@ -13,6 +13,9 @@ import paymentRoutes from './routes/paymentRoutes';
 import webhookRoute from './routes/webhookRoute';
 import analyticsRoute from './routes/analyticsRoute';
 import gatewayAuthRoute from './routes/gatewayAuthRoute';
+import paymentModel from './models/paymentModel';
+import verifyToken from './middleware/verifyToken';
+import apiKey from './models/apiKey';
 
 const app = express();
 
@@ -116,6 +119,46 @@ app.get("/checkAuth", (req, res) => {
         res.json({ isAuthenticated: false });
     }
 
-})
+});
+
+app.get("/payments", verifyToken, async (req, res) => {
+    try {
+
+        const apiKeyId = req.query.apiKeyId as string;
+
+        if (!apiKeyId) {
+            return res.status(401).json({
+                success: false,
+                message: "Unauthorized"
+            });
+        }
+
+        const key = await apiKey.findOne({
+            _id: apiKeyId,
+            userId: req.userId,
+        });
+
+        if (!key) {
+            return res.status(403).json({
+                success: false,
+                message: "Access denied",
+            });
+        }
+
+        const payments = await paymentModel
+            .find({ 
+                userId: req.userId, 
+                apiKeyId: apiKeyId,
+            })
+            .sort({ createdAt: -1 });
+
+        return res.status(200).json({ payments });
+    } catch (err: any) {
+        console.error("Fetch payments error:", err);
+        return res.status(500).json({
+            message: "Failed to fetch payments",
+        });
+    }
+});
 
 export default app;

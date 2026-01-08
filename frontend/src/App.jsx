@@ -13,6 +13,7 @@ import ProtectedRoutes from '../utils/ProtectedRoutes';
 import Analytics from './components/analytics';
 import Docs from './components/docs';
 import GatewayConnection from './components/gatewayConnect';
+import Payments from './components/payments';
 
 function App() {
 
@@ -70,6 +71,7 @@ function App() {
             <Route path="/apikey" element={<ApiKey />} />
             <Route path="/analytics" element={<Analytics />} />
             <Route path="/gateways" element={<GatewayConnection />} />
+            <Route path="/payments" element={<Payments />} />
           </Route>
 
         </Routes>
