@@ -12,6 +12,7 @@ import apiKeyRoutes from './routes/apiKeyRoute';
 import paymentRoutes from './routes/paymentRoutes';
 import webhookRoute from './routes/webhookRoute';
 import analyticsRoute from './routes/analyticsRoute';
+import gatewayAuthRoute from './routes/gatewayAuthRoute';
 
 const app = express();
 
@@ -20,7 +21,6 @@ app.use(cors({
     credentials: true
 }));
 
-
 app.use(express.json());
 app.use(cookieParser());
 
@@ -28,6 +28,7 @@ app.use("/webhook", webhookRoute);
 app.use("/api/keys", apiKeyRoutes);
 app.use("/api/payment", paymentRoutes);
 app.use("/analytics", analyticsRoute);
+app.use("/gateways", gatewayAuthRoute);
 
 app.get('/', (req, res) => {
     res.send('Vault API is running...');
@@ -116,10 +117,5 @@ app.get("/checkAuth", (req, res) => {
     }
 
 })
-
-app.use('/api/payments', (req, res) => {
-    res.json({ message: 'Payments route works!' });
-});
-
 
 export default app;

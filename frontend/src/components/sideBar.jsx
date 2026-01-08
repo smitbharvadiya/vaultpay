@@ -1,4 +1,5 @@
 import { FaTachometerAlt, FaKey, FaChartBar, FaCog, FaSignOutAlt } from "react-icons/fa";
+import { MdOutlinePayments } from "react-icons/md";
 import { useNavigate, useLocation } from "react-router-dom";
 
 const SideBar = ({ setIsLogin }) => {
@@ -40,6 +41,7 @@ const SideBar = ({ setIsLogin }) => {
         { name: "Dashboard", icon: <FaTachometerAlt />, path: "/dashboard" },
         { name: "API Keys", icon: <FaKey />, path: "/apikey" },
         { name: "Analytics", icon: <FaChartBar />, path: "/analytics" },
+        { name: "Gateways", icon: <MdOutlinePayments />, path: "/gateways" },
     ];
 
     const bottomItems = [

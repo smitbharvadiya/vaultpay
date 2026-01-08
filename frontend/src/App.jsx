@@ -12,6 +12,7 @@ import DashboardLayout from './pages/DashboardLayout';
 import ProtectedRoutes from '../utils/ProtectedRoutes';
 import Analytics from './components/analytics';
 import Docs from './components/docs';
+import GatewayConnection from './components/gatewayConnect';
 
 function App() {
 
@@ -32,7 +33,6 @@ function App() {
         const data = await res.json();
 
         setIsLogin(data.isAuthenticated);
-
 
       } catch (err) {
         console.error("Auth check failed:", err);
@@ -69,6 +69,7 @@ function App() {
             <Route path="/apikey/create" element={<CreateKey />} />
             <Route path="/apikey" element={<ApiKey />} />
             <Route path="/analytics" element={<Analytics />} />
+            <Route path="/gateways" element={<GatewayConnection />} />
           </Route>
 
         </Routes>

@@ -16,7 +16,7 @@ export class PaymentService {
             throw new Error(`Provider "${provider}" not supported.`);
         }
 
-        const adaptor = adaptorFactory();
+        const adaptor = await adaptorFactory(params.userId!);
 
         const paymentResult = await adaptor.createPayment(params);
 
@@ -69,7 +69,7 @@ export class PaymentService {
             throw new Error("Provider not supported");
         }
 
-        const adaptor = adaptorFactory();
+        const adaptor = await adaptorFactory(payment.userId.toString());
 
         const refund = await adaptor.refundPayment(params);
 

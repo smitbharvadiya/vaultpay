@@ -26,9 +26,10 @@ export interface ProviderAdaptor {
         status: string;
         raw: any;
     }>
-
-    verifyWebhook(req: any): any;
-
-    normalizeWebhook(event: any): any;
     
+}
+
+export interface WebhookAdapter {
+  verifyWebhook(req: any): any;
+  normalizeWebhook(event: any): Promise<any>;
 }
