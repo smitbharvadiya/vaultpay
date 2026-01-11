@@ -76,6 +76,7 @@ const Landing = ({ setOpenLogin }) => {
       {/* feauture list */}
       <div className="border-t-1 border-[#dfdfdf] px-20 py-15">
         <h1 className="text-4xl font-plus-jakarta-sans font-semibold text-center tracking-tight">The Backbone of Your Payment Flow</h1>
+        <p className="text-center text-gray-400">Everything you need to build, scale, and secure your payment infrastructure.</p>
 
         <div className="flex justify-center py-8">
           <img

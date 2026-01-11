@@ -5,7 +5,7 @@ declare global{
             userTier?: string;
             provider?: string;
             apiKey?: {
-                id:string,
+                id: string,
             }
         }
     }

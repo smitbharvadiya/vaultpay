@@ -1,7 +1,9 @@
-import { FaTachometerAlt, FaKey, FaChartBar, FaCog, FaSignOutAlt } from "react-icons/fa";
+import { FaKey, FaChartBar, FaCog, FaSignOutAlt } from "react-icons/fa";
 import { RiSecurePaymentFill } from "react-icons/ri";
 import { MdOutlinePayments } from "react-icons/md";
 import { useNavigate, useLocation } from "react-router-dom";
+import { TiHome } from "react-icons/ti";
+
 
 const SideBar = ({ setIsLogin }) => {
     const navigate = useNavigate();
@@ -38,7 +40,7 @@ const SideBar = ({ setIsLogin }) => {
     }
 
     const menuItems = [
-        { name: "Dashboard", icon: <FaTachometerAlt />, path: "/dashboard" },
+        { name: "Dashboard", icon: <TiHome />, path: "/dashboard" },
         { name: "API Keys", icon: <FaKey />, path: "/apikey" },
         { name: "Analytics", icon: <FaChartBar />, path: "/analytics" },
         { name: "Gateways", icon: <RiSecurePaymentFill />, path: "/gateways" },

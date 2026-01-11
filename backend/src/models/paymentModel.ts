@@ -47,8 +47,8 @@ const paymentSchema = new Schema<IPayments>({
         type: String,
         default: "created",
     },
-    raw: { 
-        type: Object 
+    raw: {
+        type: Object
     },
 }, { timestamps: true });
 

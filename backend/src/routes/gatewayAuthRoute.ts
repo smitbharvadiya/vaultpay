@@ -2,7 +2,6 @@ import express from "express";
 import verifyToken from "../middleware/verifyToken";
 import { encrypt } from "../utils/encryption";
 import ConnectedGateway from "../models/connectedGateway";
-import connectedGateway from "../models/connectedGateway";
 
 const router = express.Router();
 
@@ -13,6 +12,12 @@ router.post("/razorpay/connect", verifyToken, async (req, res) => {
 
         if (!keyId || !keySecret) {
             return res.status(400).json({ message: "Missing Razorpay credentials" });
+        }
+
+        if (keyId.startsWith("rzp_live_")) {
+            return res.status(400).json({
+                message: "Live Razorpay keys are not allowed. VaultPay supports TEST mode only."
+            });
         }
 
         const authHeader = "Basic " + Buffer.from(`${keyId}:${keySecret}`).toString("base64");
@@ -33,11 +38,10 @@ router.post("/razorpay/connect", verifyToken, async (req, res) => {
             });
         }
 
-        const encryptedCredentials = encrypt({ keyId, keySecret });
-
         const existing = await ConnectedGateway.findOne({
             userId: req.userId,
             provider: "razorpay",
+            env: "test",
         });
 
         if (existing) {
@@ -46,9 +50,12 @@ router.post("/razorpay/connect", verifyToken, async (req, res) => {
             });
         }
 
+        const encryptedCredentials = encrypt({ keyId, keySecret });
+
         await ConnectedGateway.create({
             userId: req.userId,
             provider: "razorpay",
+            env: "test",
             type: "api_key",
             credentials: encryptedCredentials,
         });
@@ -66,9 +73,10 @@ router.post("/razorpay/connect", verifyToken, async (req, res) => {
 router.get("/razorpay/status", verifyToken, async (req, res) => {
 
     try {
-        const gateway = await connectedGateway.findOne({
+        const gateway = await ConnectedGateway.findOne({
             userId: req.userId,
             provider: "razorpay",
+            env: "test",
             status: "CONNECTED",
             is_active: true
         });
@@ -76,7 +84,7 @@ router.get("/razorpay/status", verifyToken, async (req, res) => {
         return res.status(200).json({
             connected: Boolean(gateway),
         });
-        
+
     } catch (err) {
         console.error("Gateway status error:", err);
         return res.status(500).json({
@@ -85,5 +93,19 @@ router.get("/razorpay/status", verifyToken, async (req, res) => {
         });
     }
 });
+
+router.delete("/razorpay", verifyToken, async (req, res) => {
+    try {
+        const userId = req.userId;
+
+        const deleted = await ConnectedGateway.findOneAndDelete({ userId, provider: 'razorpay' });
+
+        if (!deleted) return res.status(404).json({ message: "Gateway not found" });
+
+        res.status(200).json({ message: "Gateway connection wiped successfully" });
+    } catch (err) {
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+})
 
 export default router;

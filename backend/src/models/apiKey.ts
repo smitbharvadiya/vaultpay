@@ -19,6 +19,7 @@ const apiSchema = new Schema<IApiKey>(
         name: {
             type: String,
             required: true,
+            trim: true,
         },
         key: {
             type: String,

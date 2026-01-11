@@ -22,6 +22,8 @@ function App() {
   const [isLogin, setIsLogin] = useState(false);
   const [loading, setLoading] = useState(true);
 
+  const isModalOpen = openSignUp || openLogin;
+
   useEffect(() => {
 
     const checkAuth = async () => {
@@ -37,7 +39,7 @@ function App() {
 
       } catch (err) {
         console.error("Auth check failed:", err);
-      }finally{
+      } finally {
         setLoading(false);
       }
     };
@@ -53,28 +55,52 @@ function App() {
   return (
     <>
       <Router>
-        <Header setOpenSignUp={setOpenSignUp} setOpenLogin={setOpenLogin} isLogin={isLogin} setIsLogin={setIsLogin} />
 
-        <SignUp openSignUp={openSignUp} setOpenSignUp={setOpenSignUp} setIsLogin={setIsLogin} setOpenLogin={setOpenLogin} />
-        <Login openLogin={openLogin} setOpenLogin={setOpenLogin} setIsLogin={setIsLogin} setOpenSignUp={setOpenSignUp} />
+        <SignUp
+          openSignUp={openSignUp}
+          setOpenSignUp={setOpenSignUp}
+          setIsLogin={setIsLogin}
+          setOpenLogin={setOpenLogin}
+        />
+        <Login
+          openLogin={openLogin}
+          setOpenLogin={setOpenLogin}
+          setIsLogin={setIsLogin}
+          setOpenSignUp={setOpenSignUp}
+        />
 
-        <Routes>
-          <Route path="/" element={<Main isLogin={isLogin} setOpenLogin={setOpenLogin} />} />
-          <Route path="/docs" element={<Docs />} />
-          <Route element={
-            <ProtectedRoutes isLogin={isLogin}>
-              <DashboardLayout setIsLogin={setIsLogin} />
-            </ProtectedRoutes>
-          }>
-            <Route path="/dashboard" element={<CreateKey />} />
-            <Route path="/apikey/create" element={<CreateKey />} />
-            <Route path="/apikey" element={<ApiKey />} />
-            <Route path="/analytics" element={<Analytics />} />
-            <Route path="/gateways" element={<GatewayConnection />} />
-            <Route path="/payments" element={<Payments />} />
-          </Route>
+        <div className={` ${isModalOpen ? "blur-md brightness-90 pointer-events-none" : "blur-0"}`}>
+          <Routes>
+            {/* LANDING PAGE */}
+            <Route path="/" element={
+              <>
+                <Header setOpenSignUp={setOpenSignUp} setOpenLogin={setOpenLogin} isLogin={isLogin} setIsLogin={setIsLogin} />
+                <Main isLogin={isLogin} setOpenLogin={setOpenLogin} />
+              </>
+            } />
 
-        </Routes>
+            <Route path="/docs" element={
+              <>
+                <Header setOpenSignUp={setOpenSignUp} setOpenLogin={setOpenLogin} isLogin={isLogin} setIsLogin={setIsLogin} />
+                <Docs />
+              </>
+            } />
+
+            {/* DASHBOARD */}
+            <Route element={
+              <ProtectedRoutes isLogin={isLogin}>
+                <DashboardLayout setIsLogin={setIsLogin} />
+              </ProtectedRoutes>
+            }>
+              <Route path="/dashboard" element={<CreateKey />} />
+              <Route path="/apikey/create" element={<CreateKey />} />
+              <Route path="/apikey" element={<ApiKey />} />
+              <Route path="/analytics" element={<Analytics />} />
+              <Route path="/gateways" element={<GatewayConnection />} />
+              <Route path="/payments" element={<Payments />} />
+            </Route>
+          </Routes>
+        </div>
       </Router>
     </>
   )

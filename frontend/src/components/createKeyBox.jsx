@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import { FiClipboard, FiCheck, FiKey } from "react-icons/fi";
 import { IoClose } from "react-icons/io5";
 
-
 const CreateKey = () => {
     const [name, setName] = useState("");
     const [loading, setLoading] = useState(false);
@@ -22,6 +21,7 @@ const CreateKey = () => {
 
         setLoading(true);
         try {
+
             const res = await fetch("http://localhost:5000/api/keys/generate", {
                 method: "POST",
                 headers: {
@@ -58,20 +58,20 @@ const CreateKey = () => {
     };
 
     return (
-        <div className="min-h-screen bg-[#fafafa]">
+        <div className=" bg-[#fcfcfc]">
             {/* Backdrop Overlay */}
             {showModal && (
                 <div className="fixed inset-0 backdrop-blur-sm z-40 transition-opacity duration-300" />
             )}
 
-            <div className="flex items-center text-sm gap-2 text-gray-600 mb-4 border-b border-[#dfdfdf] p-3">
+            <div className="flex items-center text-sm gap-2 bg-white text-gray-600 mb-4 border-b border-[#dfdfdf] p-4">
                 <button
                     onClick={() => navigate("/apikey")}
                     className="hover:text-black hover:-translate-x-0.5 transition-transform cursor-pointer"
                 >
                     <GoArrowLeft size={20} />
                 </button>
-                <span className="font-medium text-gray-600">API Keys</span>
+                <span className="font-normal text-gray-600">API Keys</span>
                 <span className="text-gray-900">/</span>
                 <span className="text-gray-900 font-semibold">Create</span>
             </div>
@@ -79,63 +79,77 @@ const CreateKey = () => {
             {/* Main Content */}
             <div className={`px-6 transition-all duration-300 ${showModal ? "scale-95 opacity-50 pointer-events-none" : "scale-100 opacity-100"}`}>
                 {/* Header */}
-                <div className="mb-8">
-
-
-                    <div className="border-b border-[#dfdfdf] pb-6">
-                        <h1 className="font-inter text-xl font-medium text-gray-900">Create API Key</h1>
-                        <p className="text-gray-500 mt-1">Generate a new secret key for API access</p>
-                    </div>
+                <div className="border-b border-[#dfdfdf] pb-6">
+                    <h1 className="font-inter text-xl font-medium text-gray-900">Create API Key</h1>
+                    <p className="text-gray-500 mt-1">Generate a new secret key for API access</p>
                 </div>
 
                 {/* Form Card */}
-                <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
-                    <form onSubmit={handleGenerateKey} className="space-y-4">
-                        <div>
-                            <label className="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
-                                <span>Key Name</span>
-                                <span className="text-red-500">*</span>
-                            </label>
-                            <input
-                                type="text"
-                                value={name}
-                                onChange={(e) => setName(e.target.value)}
-                                placeholder="e.g., Production Server, Development App"
-                                className="w-full border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition-all duration-200 bg-gray-50 hover:bg-white"
-                                required
-                            />
-                            <p className="text-xs text-gray-400 mt-2">Give your key a descriptive name for easy identification</p>
-                        </div>
+                <div>
+                    <div>
+                        <form onSubmit={handleGenerateKey} className="px-4 py-6 space-y-8">
 
-                        {error && (
-                            <p className="text-red-600 text-sm mb-4">{error}</p>
-                        )}
+                            {/* Input Group */}
+                            <div className="space-y-3">
+                                <div className="flex items-center">
+                                    <label htmlFor="key-name" className="text-[12px] font-bold uppercase tracking-wider text-zinc-700">
+                                        Name
+                                    </label>
+                                    <span className="text-red-500 px-1">*</span>
+                                </div>
 
+                                <input
+                                    id="key-name"
+                                    type="text"
+                                    value={name}
+                                    onChange={(e) => setName(e.target.value)}
+                                    placeholder="e.g., Production key"
+                                    className="w-[50%] bg-white border border-zinc-200  px-3 py-2.5 text-sm transition-all duration-200
+                     placeholder:text-zinc-300
+                     hover:border-zinc-300
+                     focus:ring-[4px] focus:ring-zinc-100 focus:border-zinc-900 focus:outline-none"
+                                    required
+                                />
+                            </div>
 
-                        <button
-                            type="submit"
-                            disabled={loading || !name.trim()}
-                            className={`font-inter text-sm py-2 px-4 rounded-full font-medium transition-all duration-200 ${loading || !name.trim()
-                                ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                                : "bg-black text-white hover:bg-gray-800 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
-                                }`}
-                        >
-                            {loading ? (
-                                <>
-                                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                                    Generating Key...
-                                </>
-                            ) : (
-                                <>
-                                    Create API Key
-                                </>
+                            {/* Error Message */}
+                            {error && (
+                                <div className="flex items-center gap-2 px-4 py-3 bg-red-50 border border-red-100 rounded-lg">
+                                    <div className="w-1 h-1 rounded-full bg-red-500" />
+                                    <span className="text-[12px] font-medium text-red-600">{error}</span>
+                                </div>
                             )}
-                        </button>
-                    </form>
+
+                            {/* Form Action */}
+                            <div className="pt-4  flex items-center gap-3">
+                                <button
+                                    type="button"
+                                    onClick={() => navigate("/apikey")}
+                                    className="px-4 py-2 text-sm font-medium text-zinc-600 hover:text-zinc-900 transition-colors cursor-pointer"
+                                >
+                                    Cancel
+                                </button>
+
+                                <button
+                                    type="submit"
+                                    disabled={loading || !name.trim()}
+                                    className={`relative min-w-[140px] flex items-center justify-center gap-2 px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200
+                                    ${loading 
+                                            ? "bg-zinc-100 text-zinc-400 cursor-not-allowed border border-zinc-200"
+                                            : "bg-zinc-900 text-white hover:bg-black active:scale-[0.97] shadow-sm hover:shadow-md cursor-pointer"
+                                        }`}
+                                >
+                                    {loading ? (
+                                        <div className="w-4 h-4 border-2 border-zinc-500 border-t-white rounded-full animate-spin" />
+                                    ) : (
+                                        "Create API Key"
+                                    )}
+                                </button>
+                            </div>
+
+                        </form>
+                    </div>
                 </div>
-
-
-
 
             </div>
 

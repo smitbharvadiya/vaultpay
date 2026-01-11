@@ -78,7 +78,7 @@ const Payments = () => {
     };
 
     return (
-        <div className="p-6 bg-gray-50 min-h-screen">
+        <div className="p-6 bg-gray-50">
             <div className="max-w-6xl mx-auto">
 
                 {/* Header Section */}
@@ -136,7 +136,6 @@ const Payments = () => {
                                     <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase">Amount</th>
                                     <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase">Currency</th>
                                     <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase">Status</th>
-                                    <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase">Mode</th>
                                     <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase text-right">Created At</th>
                                 </tr>
                             </thead>
@@ -169,11 +168,12 @@ const Payments = () => {
                                                     {payment.status}
                                                 </span>
                                             </td>
-                                            <td className="px-6 py-4 text-sm font-semibold text-gray-900">
-                                                { }
-                                            </td>
-                                            <td className="px-6 py-4 text-right">
-                                                {new Date(payment.createdAt).toLocaleString()}
+                                            <td className="text-xs text-zinc-500 px-6 py-4 text-right">
+                                                {new Date(payment.createdAt).toLocaleDateString(undefined, {
+                                                    month: 'short',
+                                                    day: 'numeric',
+                                                    year: 'numeric'
+                                                })}
                                             </td>
                                         </tr>
                                     ))

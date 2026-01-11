@@ -18,12 +18,12 @@ const encryptedFieldSchema = new mongoose.Schema(
 export interface IConnectedGateway {
   userId: mongoose.Types.ObjectId;
   provider: "razorpay" | "stripe" | "paypal";
+  env: "test";
   type: "api_key" | "oauth";
   credentials: EncryptedCredentials;
   status: "CONNECTED" | "DISCONNECTED";
   is_active: boolean;
 }
-
 
 const connectedGatewaySchema = new Schema<IConnectedGateway>(
   {
@@ -37,6 +37,12 @@ const connectedGatewaySchema = new Schema<IConnectedGateway>(
       type: String,
       enum: ["razorpay", "stripe", "paypal"],
       required: true,
+    },
+    env: {
+      type: String,
+      enum: ["test"],
+      default: "test",
+      immutable: true,
     },
     type: {
       type: String,
@@ -61,6 +67,10 @@ const connectedGatewaySchema = new Schema<IConnectedGateway>(
   { timestamps: true }
 );
 
+connectedGatewaySchema.index(
+  { userId: 1, provider: 1, env: 1 },
+  { unique: true }
+);
 
 export default mongoose.model(
   "ConnectedGateway",
