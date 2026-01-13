@@ -1,8 +1,9 @@
-import { FaKey, FaChartBar, FaCog, FaSignOutAlt } from "react-icons/fa";
+import { FaChartBar, FaCog, FaSignOutAlt } from "react-icons/fa";
+import { FiKey } from "react-icons/fi";
 import { RiSecurePaymentFill } from "react-icons/ri";
-import { MdOutlinePayments } from "react-icons/md";
+import { MdKeyboardArrowRight, MdOutlinePayment } from "react-icons/md";
 import { useNavigate, useLocation } from "react-router-dom";
-import { TiHome } from "react-icons/ti";
+import { LuLayoutDashboard } from "react-icons/lu";
 
 
 const SideBar = ({ setIsLogin }) => {
@@ -40,16 +41,16 @@ const SideBar = ({ setIsLogin }) => {
     }
 
     const menuItems = [
-        { name: "Dashboard", icon: <TiHome />, path: "/dashboard" },
-        { name: "API Keys", icon: <FaKey />, path: "/apikey" },
+        { name: "Dashboard", icon: <LuLayoutDashboard />, path: "/dashboard" },
+        { name: "API Keys", icon: <FiKey />, path: "/apikey" },
         { name: "Analytics", icon: <FaChartBar />, path: "/analytics" },
         { name: "Gateways", icon: <RiSecurePaymentFill />, path: "/gateways" },
-        { name: "Payments", icon: <MdOutlinePayments />, path: "/Payments" },
+        { name: "Transactions", icon: <MdOutlinePayment />, path: "/Transactions" },
     ];
 
     const bottomItems = [
         { name: "Settings", icon: <FaCog />, path: "/settings" },
-        { name: "Logout", icon: <FaSignOutAlt />, action: "logout" },
+        { name: "Log Out", icon: <FaSignOutAlt />, action: "logout" },
     ];
 
     return (
@@ -87,19 +88,25 @@ const SideBar = ({ setIsLogin }) => {
 const NavItem = ({ item, isActive, onClick }) => (
     <button
         onClick={onClick}
-        className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-all duration-150 group
+        className={`w-full flex justify-between items-center px-3 py-2 rounded-md text-sm font-medium transition-all duration-150 group cursor-pointer
             ${isActive
-                ? "bg-gray-100 text-black"
+                ? "bg-black text-white"
                 : "text-gray-600 hover:bg-gray-50 hover:text-black"
             }
     `}>
-        <span
-            className={`text-base transition-colors
-            ${isActive ? "text-black" : "text-gray-400 group-hover:text-black"}
+        <div className="flex items-center gap-3">
+            <span
+                className={`text-base transition-colors
+            ${isActive ? "text-white" : "text-gray-400 group-hover:text-black"}
         `}>
-            {item.icon}
-        </span>
-        {item.name}
+                {item.icon}
+            </span>
+            {item.name}
+        </div>
+
+        {isActive && (<span className="">
+            <MdKeyboardArrowRight size={18} />
+        </span>)}
     </button>
 );
 

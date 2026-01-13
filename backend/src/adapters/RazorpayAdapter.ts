@@ -26,7 +26,6 @@ export class RazorpayAdapter implements ProviderAdaptor {
             console.error("Decrypt failed:", err);
             throw new Error("Gateway credentials corrupted or key mismatch");
         }
-
     }
 
     async createPayment(params: {
@@ -60,7 +59,6 @@ export class RazorpayAdapter implements ProviderAdaptor {
             currency: order.currency,
             provider: "razorpay",
             status: mapStatus(order.status),
-            raw: order,
         }
     };
 
@@ -92,7 +90,6 @@ export class RazorpayAdapter implements ProviderAdaptor {
                 amount: refund.amount !== undefined ? refund.amount / 100 : 0,
                 currency: refund.currency,
                 status: mapStatus(refund.status),
-                raw: refund,
             };
 
         } catch (err: any) {

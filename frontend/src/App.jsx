@@ -13,7 +13,8 @@ import ProtectedRoutes from '../utils/ProtectedRoutes';
 import Analytics from './components/analytics';
 import Docs from './components/docs';
 import GatewayConnection from './components/gatewayConnect';
-import Payments from './components/payments';
+import Transactions from './components/transactions';
+import Dashboard from './components/dashboard';
 
 function App() {
 
@@ -92,12 +93,12 @@ function App() {
                 <DashboardLayout setIsLogin={setIsLogin} />
               </ProtectedRoutes>
             }>
-              <Route path="/dashboard" element={<CreateKey />} />
+              <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/apikey/create" element={<CreateKey />} />
               <Route path="/apikey" element={<ApiKey />} />
               <Route path="/analytics" element={<Analytics />} />
               <Route path="/gateways" element={<GatewayConnection />} />
-              <Route path="/payments" element={<Payments />} />
+              <Route path="/transactions" element={<Transactions />} />
             </Route>
           </Routes>
         </div>

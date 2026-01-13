@@ -99,7 +99,7 @@ const Login = ({ openLogin, setOpenLogin, setIsLogin, setOpenSignUp }) => {
                 {/* Message */}
                 {message && (
                     <p
-                        className={`mt-4 text-center text-sm ${isError ? "text-red-500" : "text-green-600"
+                        className={`mt-3 text-center text-sm ${isError ? "text-red-500" : "text-green-600"
                             }`}
                     >
                         {message}

@@ -68,7 +68,7 @@ const Analytics = () => {
             <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
                 <div>
                     <h1 className="text-2xl font-bold text-gray-800">API Analytics</h1>
-                    <p className="text-gray-500">Monitor your API performance and usage</p>
+                    <p className="text-gray-500">Monitor your API usage and performance metrics in real-time</p>
                 </div>
 
                 <div className="flex items-center gap-3 bg-white p-2 rounded-lg border border-gray-200 shadow-sm">

@@ -9,8 +9,7 @@ export interface IPayments extends Document {
     paymentId?: string,
     amount: number,
     currency: string,
-    status: string
-    raw: object,
+    status: string,
 }
 
 const paymentSchema = new Schema<IPayments>({
@@ -46,9 +45,6 @@ const paymentSchema = new Schema<IPayments>({
     status: {
         type: String,
         default: "created",
-    },
-    raw: {
-        type: Object
     },
 }, { timestamps: true });
 

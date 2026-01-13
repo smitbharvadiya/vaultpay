@@ -29,9 +29,8 @@ export class PaymentService {
             provider,
             orderId: paymentResult.orderId,
             amount: paymentResult.amount / 100,
-            currency: paymentResult.currency,
+            currency: paymentResult.currency.toUpperCase(),
             status: paymentResult.status,
-            raw: paymentResult.raw,
         });
 
         return saved;
@@ -50,7 +49,6 @@ export class PaymentService {
             amount: payment.amount,
             currency: payment.currency,
             status: payment.status,
-            metadata: payment.raw,
         }
     }
 
@@ -84,7 +82,6 @@ export class PaymentService {
             amount: refund.amount,
             currency: refund.currency,
             status: refund.status,
-            raw: refund.raw
         });
 
         return saved;

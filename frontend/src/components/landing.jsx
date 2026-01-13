@@ -50,8 +50,8 @@ const Landing = ({ setOpenLogin }) => {
             <h1 className="text-6xl md:text-7xl">Not workload.</h1>
           </div>
 
-          <p className="mt-8 font-geist text-[#797c78] text-lg md:text-lg max-w-xl mx-auto tracking-tight">
-            The developer-first API layer that standardizes your payment flow across every global gateway.
+          <p className="mt-8 font-geist text-zinc-400 text-lg md:text-lg max-w-xl mx-auto tracking-tight">
+            The developer-first API layer that standardizes your payment flow across global gateways.
           </p>
 
         </div>
@@ -76,7 +76,6 @@ const Landing = ({ setOpenLogin }) => {
       {/* feauture list */}
       <div className="border-t-1 border-[#dfdfdf] px-20 py-15">
         <h1 className="text-4xl font-plus-jakarta-sans font-semibold text-center tracking-tight">The Backbone of Your Payment Flow</h1>
-        <p className="text-center text-gray-400">Everything you need to build, scale, and secure your payment infrastructure.</p>
 
         <div className="flex justify-center py-8">
           <img

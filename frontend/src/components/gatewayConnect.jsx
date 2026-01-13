@@ -3,35 +3,58 @@ import { FiCheckCircle, FiPlus, FiX, FiShield, FiExternalLink, FiLoader, FiAlert
 import { BsThreeDotsVertical } from "react-icons/bs";
 
 const GatewayConnection = () => {
-    const [openRazorpayConnect, setOpenRazorpayConnect] = useState(false);
     const [apiKey, setApiKey] = useState("");
-    const [secret, setSecret] = useState("");
+    const [razorpaySecret, setRazorpaySecret] = useState("");
+    const [stripeSecret, setStripeSecret] = useState("");
     const [loading, setLoading] = useState(false);
-    const [isConnected, setIsConnected] = useState(false);
-    const [showDropdown, setShowDropdown] = useState(false);
+    const [connections, setConnections] = useState({
+        razorpay: false,
+        stripe: false,
+    });
 
-    const dropdownRef = useRef(null);
+    const [openMenu, setOpenMenu] = useState(null);
+    const [activeGateway, setActiveGateway] = useState(null);
 
-    const handleRayzorpayAuth = async () => {
+    const menuRef = useRef(null);
+
+    const gateways = [{ name: "razorpay", desc: "Accept payments in India via UPI, Cards, and Netbanking." },
+    { name: "stripe", desc: "Accept payments Globally via Cards, and Netbanking." }
+    ];
+
+    const handleGatewayAuth = async () => {
+        if (!activeGateway) return;
+
         try {
+            let credentials = null;
+
+            if (activeGateway === "stripe") {
+                credentials = { secretKey: stripeSecret }
+            } else if (activeGateway === "razorpay") {
+                credentials = {
+                    keyId: apiKey,
+                    keySecret: razorpaySecret,
+                }
+            }
+
             setLoading(true);
 
-            const res = await fetch("http://localhost:5000/gateways/razorpay/connect", {
+            const res = await fetch(`http://localhost:5000/gateways/${activeGateway}/connect`, {
                 method: "POST",
                 credentials: "include",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    keyId: apiKey,
-                    keySecret: secret,
-                }),
+                body: JSON.stringify(credentials),
             });
 
             const data = await res.json();
             if (!res.ok) throw new Error(data.message || "Connection failed");
 
-            setIsConnected(true);
-            setOpenRazorpayConnect(false);
-            alert("Razorpay connected successfully ✅");
+            setConnections(prev => ({
+                ...prev,
+                [activeGateway]: true
+            }));
+
+            setActiveGateway(null);
+            alert(`${activeGateway} connected successfully ✅`);
 
         } catch (err) {
             console.error("Error:", err.message);
@@ -43,25 +66,33 @@ const GatewayConnection = () => {
 
     useEffect(() => {
         const fetchStatus = async () => {
-            try {
-                const res = await fetch("http://localhost:5000/gateways/razorpay/status", {
-                    method: "GET",
-                    credentials: "include",
-                })
+            for (const gateway of gateways) {
+                try {
+                    const res = await fetch(`http://localhost:5000/gateways/${gateway.name}/status`, {
+                        method: "GET",
+                        credentials: "include",
+                    })
 
-                const data = await res.json();
-                setIsConnected(data.connected);
+                    const data = await res.json();
+                    setConnections(prev => ({
+                        ...prev,
+                        [gateway.name]: data.connected
+                    }));
 
-            } catch {
-                setIsConnected(false);
+                } catch {
+                    setConnections(prev => ({
+                        ...prev,
+                        [gateway.name]: false
+                    }));
+                }
             }
-        }
+        };
         fetchStatus();
     }, []);
 
-    const handleDeleteGateway = async () => {
+    const handleDeleteGateway = async (gateway) => {
         try {
-            const res = await fetch("http://localhost:5000/gateways/razorpay", {
+            const res = await fetch(`http://localhost:5000/gateways/${gateway}`, {
                 method: "DELETE",
                 credentials: "include",
             })
@@ -69,8 +100,11 @@ const GatewayConnection = () => {
             const data = await res.json();
 
             if (res.ok) {
-                setIsConnected(false); 
-                setShowDropdown(false); 
+                setConnections(prev => ({
+                    ...prev,
+                    [gateway]: false
+                }));
+                setOpenMenu(null);
                 alert("Gateway removed successfully");
             } else {
                 throw new Error(data.message || "Failed to remove gateway");
@@ -82,14 +116,19 @@ const GatewayConnection = () => {
     }
 
     useEffect(() => {
-        const handleClickOutSide = (event) => {
-            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-                setShowDropdown(false);
+        const handleClickOutside = (event) => {
+            if (menuRef.current && !menuRef.current.contains(event.target)) {
+                setOpenMenu(null);
             }
-        }
-        document.addEventListener("mousedown", handleClickOutSide);
-        return () => document.removeEventListener("mousedown", handleClickOutSide);
+        };
+
+        document.addEventListener("mousedown", handleClickOutside);
+
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
     }, []);
+
 
     return (
         <div className="p-8 max-w-4xl">
@@ -114,71 +153,88 @@ const GatewayConnection = () => {
             </div>
 
             {/* Gateway Card */}
-            <div className="bg-white border border-zinc-200 rounded-[24px] p-6 hover:shadow-md transition-all max-w-sm">
-                <div className="flex justify-between items-start">
-                    <div className="flex flex-col gap-2 mb-4">
-                        <h3 className="text-lg font-bold text-zinc-900 capitalize">Razorpay</h3>
-                        {isConnected ? (
-                            <span className="w-fit flex items-center gap-1 px-3 py-1 bg-emerald-50 text-emerald-700 text-[10px] font-bold rounded-full border border-emerald-100">
-                                <FiCheckCircle /> ACTIVE
-                            </span>
-                        ) : (
-                            <span className="w-fit px-3 py-1 bg-zinc-50 text-zinc-400 text-[10px] font-bold rounded-full border border-zinc-100">
-                                OFFLINE
-                            </span>
-                        )}
-                    </div>
+            <div className="flex gap-6">
 
-                    <div className="relative" ref={dropdownRef}>
-                        <button
-                            onClick={() => setShowDropdown(!showDropdown)}
-                            className="p-2 hover:bg-zinc-50 rounded-full text-zinc-400 hover:text-zinc-900 transition-all cursor-pointer"
+                {gateways.map((gateway) => {
+                    const connected = connections[gateway.name];
+
+                    return (
+                        <div
+                            key={gateway.name}
+                            className="bg-white border border-zinc-200 rounded-[24px] p-6 hover:shadow-md transition-all max-w-sm"
                         >
-                            <BsThreeDotsVertical />
-                        </button>
+                            <div className="flex justify-between items-start">
+                                <div className="flex flex-col gap-2 mb-4">
+                                    <h3 className="text-lg font-bold capitalize">{gateway.name}</h3>
 
-                        {showDropdown && (
-                            <div className="absolute right-0 mr-1 w-40 bg-white border border-zinc-200 rounded-lg shadow-xl shadow-zinc-200/50 z-10 animate-in fade-in zoom-in-95 duration-200">
-                                <button
-                                    className="w-full p-4 text-left text-xs font-medium text-red-600 hover:bg-red-50 flex items-center gap-2 transition-colors"
-                                    onClick={handleDeleteGateway}
-                                >
-                                    Remove
-                                </button>
+                                    {connected ? (
+                                        <span className="flex items-center gap-1 px-3 py-1 bg-emerald-50 text-emerald-700 text-[10px] font-bold rounded-full">
+                                            <FiCheckCircle /> ACTIVE
+                                        </span>
+                                    ) : (
+                                        <span className="px-3 py-1 bg-zinc-50 text-zinc-400 text-[10px] font-bold rounded-full">
+                                            OFFLINE
+                                        </span>
+                                    )}
+                                </div>
+
+                                <div className="relative" ref={menuRef}>
+                                    <button
+                                        onClick={() =>
+                                            setOpenMenu(openMenu === gateway.name ? null : gateway.name)
+                                        }
+                                        className="p-2 hover:bg-zinc-50 rounded-full cursor-pointer"
+                                    >
+                                        <BsThreeDotsVertical />
+                                    </button>
+
+                                    {openMenu === gateway.name && (
+                                        <div
+                                            className="absolute right-0 w-40 bg-white rounded-lg shadow-xl"
+                                        >
+                                            <button
+                                                onClick={() => handleDeleteGateway(gateway.name)}
+                                                className="w-full p-4 text-xs font-medium text-red-600 hover:bg-red-50 rounded-lg cursor-pointer"
+                                            >
+                                                Remove
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
                             </div>
-                        )}
-                    </div>
-                </div>
 
-                <p className="text-sm text-zinc-500 mb-8 leading-relaxed">
-                    Accept payments in India via UPI, Cards, and Netbanking.
-                </p>
+                            <p className="text-sm text-zinc-500 mb-6">{gateway.desc}</p>
 
-                <button
-                    disabled={isConnected}
-                    onClick={() => setOpenRazorpayConnect(true)}
-                    className={`w-full flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-sm transition-all ${isConnected
-                        ? "bg-zinc-100 text-zinc-500 cursor-not-allowed"
-                        : "bg-zinc-900 text-white hover:bg-black cursor-pointer"
-                        }`}
-                >
-                    {isConnected ? "Connected" : <><FiPlus /> Connect Razorpay</>}
-                </button>
+                            <button
+                                disabled={connected}
+                                onClick={() => setActiveGateway(gateway.name)}
+                                className={`w-full py-3 rounded-xl font-bold ${connected
+                                    ? "bg-zinc-100 text-zinc-500"
+                                    : "bg-zinc-900 text-white hover:bg-black"
+                                    }`}
+                            >
+                                {connected ? "Connected" : `Connect ${gateway.name}`}
+                            </button>
+                        </div>
+                    );
+                })}
             </div>
 
+
             {/* Modal */}
-            {openRazorpayConnect && (
+            {/* Razorpay Model */}
+            {activeGateway === "razorpay" && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
                     {/* Backdrop */}
                     <div
                         className="absolute inset-0 bg-zinc-950/40 backdrop-blur-md transition-opacity"
-                        onClick={() => setOpenRazorpayConnect(false)}
+                        onClick={() => setActiveGateway(null)}
                     />
 
                     {/* Modal Content */}
                     <div className="relative bg-white w-full max-w-md rounded-xl shadow-2xl border border-white/20 p-8 overflow-hidden animate-in fade-in zoom-in duration-300">
                         <button
-                            onClick={() => setOpenRazorpayConnect(false)}
+                            onClick={() => setActiveGateway(null)}
                             className="absolute top-6 right-6 text-zinc-400 hover:text-zinc-900 transition-colors"
                         >
                             <FiX size={20} />
@@ -206,7 +262,7 @@ const GatewayConnection = () => {
                                 <input
                                     type="password"
                                     placeholder="••••••••••••"
-                                    onChange={(e) => setSecret(e.target.value)}
+                                    onChange={(e) => setRazorpaySecret(e.target.value)}
                                     className="w-full px-4 py-3 bg-zinc-50 border border-zinc-200 focus:outline-none focus:ring-2 focus:ring-zinc-900/5 focus:border-zinc-900 transition-all font-mono text-sm"
                                 />
                             </div>
@@ -219,8 +275,8 @@ const GatewayConnection = () => {
                             </div>
 
                             <button
-                                onClick={handleRayzorpayAuth}
-                                disabled={loading || !apiKey || !secret}
+                                onClick={handleGatewayAuth}
+                                disabled={loading || !apiKey || !razorpaySecret}
                                 className="w-full py-4 bg-zinc-900 text-white rounded-2xl font-bold hover:bg-black transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                             >
                                 {loading ? (
@@ -237,6 +293,44 @@ const GatewayConnection = () => {
                                 Where do I find my keys? <FiExternalLink size={12} />
                             </a>
                         </div>
+                    </div>
+                </div>
+            )}
+            {/* Stripe Model */}
+            {activeGateway === "stripe" && (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+                    <div
+                        className="absolute inset-0 bg-zinc-950/40 backdrop-blur-md"
+                        onClick={() => setActiveGateway(null)}
+                    />
+
+                    <div className="relative bg-white w-full max-w-md rounded-xl p-8">
+                        <button
+                            onClick={() => setActiveGateway(null)}
+                            className="absolute top-6 right-6"
+                        >
+                            <FiX size={20} />
+                        </button>
+
+                        <h2 className="text-2xl font-bold mb-2">Connect Stripe</h2>
+                        <p className="text-sm text-zinc-500 mb-6">
+                            Enter your Stripe Test Secret Key
+                        </p>
+
+                        <input
+                            type="password"
+                            placeholder="sk_test_..."
+                            onChange={(e) => setStripeSecret(e.target.value)}
+                            className="w-full px-4 py-3 border rounded-lg font-mono text-sm"
+                        />
+
+                        <button
+                            onClick={handleGatewayAuth}
+                            disabled={loading || !stripeSecret}
+                            className="mt-6 w-full py-3 bg-zinc-900 text-white rounded-xl"
+                        >
+                            {loading ? "Connecting..." : "Save Connection"}
+                        </button>
                     </div>
                 </div>
             )}

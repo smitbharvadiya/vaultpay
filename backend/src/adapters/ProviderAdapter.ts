@@ -12,8 +12,7 @@ export interface ProviderAdaptor {
         currency: string;
         provider: string;
         status: "pending" | "created" | "failed" | "success";
-        raw: any;
-    }>
+    }>  
 
     refundPayment(params: {
         paymentId: string,
@@ -24,7 +23,6 @@ export interface ProviderAdaptor {
         amount: number;
         currency: string;
         status: string;
-        raw: any;
     }>
     
 }

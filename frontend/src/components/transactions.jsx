@@ -6,7 +6,7 @@ import {
     ChevronRight
 } from "lucide-react";
 
-const Payments = () => {
+const Transactions = () => {
     const [apiKeys, setApiKeys] = useState([]);
     const [selectedKey, setSelectedKey] = useState("");
     const [payments, setPayments] = useState([]);
@@ -131,7 +131,7 @@ const Payments = () => {
                         <table className="w-full text-left border-collapse">
                             <thead>
                                 <tr className="bg-gray-50/50 border-b border-gray-200">
-                                    <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase">Order ID</th>
+                                    <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase">Payment ID</th>
                                     <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase">Provider</th>
                                     <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase">Amount</th>
                                     <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase">Currency</th>
@@ -165,7 +165,7 @@ const Payments = () => {
                                             </td>
                                             <td className="px-6 py-4">
                                                 <span className={`px-2.5 py-1 rounded-full text-xs font-medium border ${getStatusStyles(payment.status)}`}>
-                                                    {payment.status}
+                                                    {payment.status.toUpperCase()}
                                                 </span>
                                             </td>
                                             <td className="text-xs text-zinc-500 px-6 py-4 text-right">
@@ -200,4 +200,4 @@ const Payments = () => {
     );
 };
 
-export default Payments;
+export default Transactions;
