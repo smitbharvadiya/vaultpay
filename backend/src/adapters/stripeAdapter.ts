@@ -22,16 +22,16 @@ export class StripeAdapter implements ProviderAdaptor {
         }
     }
 
-    private mapStatus = (status: Stripe.PaymentIntent.Status): "created" | "pending" | "failed" | "success" => {
+    private mapStatus = (status: Stripe.PaymentIntent.Status): "CREATED" | "PENDING" | "FAILED" | "SUCCESS" => {
         switch (status) {
             case "requires_payment_method":
-                return "created";
+                return "CREATED";
             case "requires_action":
-                return "pending";
+                return "PENDING";
             case "succeeded":
-                return "success";
+                return "SUCCESS";
             default:
-                return "failed";
+                return "FAILED";
         }
     };
 
@@ -50,6 +50,8 @@ export class StripeAdapter implements ProviderAdaptor {
                 enabled: true,
             },
         });
+
+        console.log(intent.client_secret);
 
 
         return {

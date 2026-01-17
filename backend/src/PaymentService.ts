@@ -28,7 +28,7 @@ export class PaymentService {
             env: params.env,
             provider,
             orderId: paymentResult.orderId,
-            amount: paymentResult.amount / 100,
+            amount: paymentResult.amount,
             currency: paymentResult.currency.toUpperCase(),
             status: paymentResult.status,
         });

@@ -66,7 +66,7 @@ const Transactions = () => {
     const getStatusStyles = (status) => {
         switch (status?.toLowerCase()) {
             case "success":
-            case "completed":
+            case "captured":
                 return "bg-emerald-50 text-emerald-700 border-emerald-100";
             case "failed":
                 return "bg-rose-50 text-rose-700 border-rose-100";
@@ -158,7 +158,7 @@ const Transactions = () => {
                                                 </div>
                                             </td>
                                             <td className="px-6 py-4 text-sm font-semibold text-gray-900">
-                                                {payment.amount.toLocaleString()}
+                                                {(payment.amount / 100 ).toLocaleString()}
                                             </td>
                                             <td className="px-6 py-4 text-sm font-semibold text-gray-900">
                                                 {payment.currency.toLocaleString()}

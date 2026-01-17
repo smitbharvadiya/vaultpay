@@ -4,7 +4,6 @@ import verifyToken from "../middleware/verifyToken";
 import ApiKey from "../models/apiKey";
 import userModel from "../models/user";
 import redis from "../redis";
-import apiKey from "../models/apiKey";
 
 const router = express.Router();
 
@@ -99,7 +98,7 @@ router.delete("/delete/:id", verifyToken, async (req, res) => {
     try {
         const keyId = req.params.id;
 
-        const deletedKey = await apiKey.findOneAndDelete({
+        const deletedKey = await ApiKey.findOneAndDelete({
             _id: keyId,
             userId: req.userId,
         });

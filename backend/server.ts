@@ -1,13 +1,14 @@
-import "./src/redis";
-import { connectRedis } from "./src/redis";
 import app from "./src/app";
+import { connectRedis } from "./src/redis";
 
 const PORT = 5000;
 
-(async () => {
-    await connectRedis();
-})();
+const startServer = async () => {
+  await connectRedis(); // connect once
 
-app.listen(PORT, () => {
-    console.log(`VaultPay backend running on port ${PORT}`);
-});
+  app.listen(PORT, () => {
+    console.log(`🚀 VaultPay backend running on port ${PORT}`);
+  });
+};
+
+startServer();

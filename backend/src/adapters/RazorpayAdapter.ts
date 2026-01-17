@@ -35,21 +35,21 @@ export class RazorpayAdapter implements ProviderAdaptor {
     }) {
 
         const order = await this.client.orders.create({
-            amount: params.amount * 100,
+            amount: params.amount,
             currency: params.currency,
             notes: params.metadata,
         });
 
-        const mapStatus = (status: string): "created" | "pending" | "failed" | "success" => {
+        const mapStatus = (status: string): "CREATED" | "PENDING" | "FAILED" | "SUCCESS" => {
             switch (status) {
                 case "created":
-                    return "created";
+                    return "CREATED";
                 case "attempted":
-                    return "pending";
+                    return "PENDING";
                 case "paid":
-                    return "success";
+                    return "SUCCESS";
                 default:
-                    return "failed";
+                    return "FAILED";
             }
         };
 
@@ -74,7 +74,7 @@ export class RazorpayAdapter implements ProviderAdaptor {
             };
 
             if (params.amount !== undefined) {
-                refundParams.amount = params.amount * 100;
+                refundParams.amount = params.amount;
             }
 
             const refund = await this.client.payments.refund(params.paymentId, refundParams);
@@ -87,7 +87,7 @@ export class RazorpayAdapter implements ProviderAdaptor {
 
             return {
                 refundId: refund.id,
-                amount: refund.amount !== undefined ? refund.amount / 100 : 0,
+                amount: refund.amount !== undefined ? refund.amount : 0,
                 currency: refund.currency,
                 status: mapStatus(refund.status),
             };

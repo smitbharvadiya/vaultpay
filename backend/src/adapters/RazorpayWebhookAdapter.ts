@@ -40,7 +40,7 @@ export class RazorpayWebhookAdapter implements WebhookAdapter {
                     {
                         paymentId: payment.id,
                         status,
-                        amount: payment.amount / 100,
+                        amount: payment.amount,
                         raw: event,
                     });
                 console.log("Payment updated in DB!");
@@ -53,7 +53,7 @@ export class RazorpayWebhookAdapter implements WebhookAdapter {
                     {
                         paymentId: payment.id,
                         status,
-                        amount: payment.amount / 100,
+                        amount: payment.amount,
                         raw: event,
                     });
                 console.log("Payment updated in DB!");
@@ -66,7 +66,7 @@ export class RazorpayWebhookAdapter implements WebhookAdapter {
                     {
                         paymentId: payment.id,
                         status,
-                        amount: payment.amount / 100,
+                        amount: payment.amount,
                         raw: event,
                     }
                 );
@@ -81,7 +81,7 @@ export class RazorpayWebhookAdapter implements WebhookAdapter {
             provider: "razorpay",
             orderId: payment.order_id,
             paymentId: payment.id,
-            amount: payment.amount / 100,
+            amount: payment.amount,
             currency: payment.currency,
             status,
         };

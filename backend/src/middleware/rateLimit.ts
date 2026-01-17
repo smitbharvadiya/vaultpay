@@ -64,6 +64,7 @@ const rateLimit = async (req: Request, res: Response, next: NextFunction) => {
             success: false,
             error: "Internal server error"
         });
+        next()
     }
 };
 

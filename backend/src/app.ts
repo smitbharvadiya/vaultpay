@@ -29,7 +29,7 @@ app.use(cookieParser());
 
 app.use("/webhook", webhookRoute);
 app.use("/api/keys", apiKeyRoutes);
-app.use("/api/payment", paymentRoutes);
+app.use("/payment", paymentRoutes);
 app.use("/analytics", analyticsRoute);
 app.use("/gateways", gatewayAuthRoute);
 

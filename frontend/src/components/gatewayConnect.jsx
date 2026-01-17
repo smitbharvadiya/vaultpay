@@ -18,7 +18,7 @@ const GatewayConnection = () => {
     const menuRef = useRef(null);
 
     const gateways = [{ name: "razorpay", desc: "Accept payments in India via UPI, Cards, and Netbanking." },
-    { name: "stripe", desc: "Accept payments Globally via Cards, and Netbanking." }
+    { name: "stripe", desc: "Global payments for modern platforms" }
     ];
 
     const handleGatewayAuth = async () => {
@@ -153,7 +153,7 @@ const GatewayConnection = () => {
             </div>
 
             {/* Gateway Card */}
-            <div className="flex gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
                 {gateways.map((gateway) => {
                     const connected = connections[gateway.name];
@@ -161,7 +161,7 @@ const GatewayConnection = () => {
                     return (
                         <div
                             key={gateway.name}
-                            className="bg-white border border-zinc-200 rounded-[24px] p-6 hover:shadow-md transition-all max-w-sm"
+                            className="flex flex-col h-full bg-white border border-zinc-200 rounded-[24px] p-6 hover:shadow-md transition-all"
                         >
                             <div className="flex justify-between items-start">
                                 <div className="flex flex-col gap-2 mb-4">
@@ -204,17 +204,18 @@ const GatewayConnection = () => {
                             </div>
 
                             <p className="text-sm text-zinc-500 mb-6">{gateway.desc}</p>
-
-                            <button
-                                disabled={connected}
-                                onClick={() => setActiveGateway(gateway.name)}
-                                className={`w-full py-3 rounded-xl font-bold ${connected
-                                    ? "bg-zinc-100 text-zinc-500"
-                                    : "bg-zinc-900 text-white hover:bg-black"
-                                    }`}
-                            >
-                                {connected ? "Connected" : `Connect ${gateway.name}`}
-                            </button>
+                            <div className="mt-auto">
+                                <button
+                                    disabled={connected}
+                                    onClick={() => setActiveGateway(gateway.name)}
+                                    className={`w-full py-3 rounded-xl font-bold ${connected
+                                        ? "bg-zinc-100 text-zinc-500"
+                                        : "bg-zinc-900 text-white hover:bg-black"
+                                        }`}
+                                >
+                                    {connected ? "Connected" : `Connect ${gateway.name}`}
+                                </button>
+                            </div>
                         </div>
                     );
                 })}

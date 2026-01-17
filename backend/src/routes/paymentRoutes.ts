@@ -1,10 +1,11 @@
 
 import express from 'express';
-
+import mongoose from "mongoose";
 import { PaymentService } from "../PaymentService";
 import verifyApiKey from '../middleware/verifyApiKey';
 import rateLimit from '../middleware/rateLimit';
 import RequestLogger from '../middleware/reqLogger';
+import paymentModel from '../models/paymentModel';
 
 const router = express.Router();
 
