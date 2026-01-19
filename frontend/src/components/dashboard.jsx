@@ -6,6 +6,7 @@ import {
 
 import { TrendingUp, CreditCard, Activity, Zap, EllipsisVertical, ArrowRight } from 'lucide-react';
 import { useNavigate } from "react-router-dom";
+import VolumeChart from "./volumeChart";
 
 const Dashboard = () => {
     const [totalVolume, setTotalVolume] = useState(0);
@@ -14,6 +15,8 @@ const Dashboard = () => {
     const [successRate, setSuccessRate] = useState(0);
     const [activeAPIs, setActiveAPIs] = useState(0);
     const [loading, setLoading] = useState(true);
+    const [chartData, setChartData] = useState([]);
+    const [loadingVolumeStats, setLoadingVolumeStats] = useState(true);
 
     const navigate = useNavigate();
 
@@ -47,6 +50,33 @@ const Dashboard = () => {
         fetchVolume();
     }, []);
 
+    useEffect(() => {
+        const fetchChart = async () => {
+            try {
+                setLoadingVolumeStats(true);
+
+                const res = await fetch(
+                    "http://localhost:5000/analytics/volume/timeseries",
+                    { credentials: "include" }
+                );
+
+                if (!res.ok) {
+                    throw new Error("Chart fetch failed");
+                }
+
+                const result = await res.json();
+                setChartData(result.data || []);
+            } catch (err) {
+                console.error("Volume chart error:", err);
+                setChartData([]);
+            } finally {
+                setLoadingVolumeStats(false);
+            }
+        };
+
+        fetchChart();
+    }, []);
+
 
     return (
         <div className="flex h-screen bg-[#FAFAFA] font-sans selection:bg-zinc-900 selection:text-white">
@@ -61,9 +91,6 @@ const Dashboard = () => {
                         <p className="text-zinc-500 text-sm">Welcome back to VaultPay</p>
                     </div>
                     <div className="flex items-center gap-4">
-                        <div className="bg-white border border-zinc-200 px-4 py-2 rounded-xl flex items-center gap-2 text-xs font-mono text-zinc-500">
-                            vp_live_sk_•••••••• <FiSettings size={14} className="cursor-pointer hover:text-zinc-900" />
-                        </div>
                         <div className="bg-emerald-50 text-emerald-600 px-3 py-1.5 rounded-full text-[10px] font-bold border border-emerald-100 flex items-center gap-2">
                             <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full" />
                             ALL SYSTEMS OPERATIONAL
@@ -75,10 +102,21 @@ const Dashboard = () => {
 
                     {/* Stats Grid */}
                     <div className="grid grid-cols-4 gap-4 mb-8">
-                        <StatCard icon={<TrendingUp size={18} />} label="Total Volume" value={`₹ ${(totalVolume / 100)}`} trend="" />
-                        <StatCard icon={<CreditCard size={18} />} label="Transactions" value={totalTransactions} trend="" />
-                        <StatCard icon={<Activity size={18} />} label="Success Rate" value={` ${successRate}%`} trend="" />
-                        <StatCard icon={<Zap size={18} />} label="Active APIs" value={activeAPIs} trend="" trendColor="text-red-500" />
+                        {loading ? (
+                            <>
+                                <StatSkeleton />
+                                <StatSkeleton />
+                                <StatSkeleton />
+                                <StatSkeleton />
+                            </>
+                        ) : (
+                            <>
+                                <StatCard icon={<TrendingUp size={18} />} label="Total Volume" value={`₹ ${(totalVolume / 100)}`} trend="" />
+                                <StatCard icon={<CreditCard size={18} />} label="Transactions" value={totalTransactions} trend="" />
+                                <StatCard icon={<Activity size={18} />} label="Success Rate" value={` ${successRate}%`} trend="" />
+                                <StatCard icon={<Zap size={18} />} label="Active APIs" value={activeAPIs} trend="" trendColor="text-red-500" />
+                            </>
+                        )}
                     </div>
 
                     {/* Bottom Section */}
@@ -86,14 +124,18 @@ const Dashboard = () => {
                         {/* Chart Simulation */}
                         <div className="col-span-2 bg-white border border-zinc-200 rounded-[32px] p-8 min-h-[400px]">
                             <div className="flex justify-between items-center mb-8">
-                                <h3 className="font-bold">Transaction Volume</h3>
+                                <div>
+                                    <h2 className="font-semibold">Transaction Volume</h2>
+                                    <p className="font-sm text-[#737373]">Last 7 Days</p>
+                                </div>
                                 <div className="flex bg-zinc-100 p-1 rounded-xl">
                                     <button className="px-4 py-1.5 bg-white shadow-sm rounded-lg text-xs font-bold">Volume</button>
                                     <button className="px-4 py-1.5 text-zinc-400 text-xs font-bold">Count</button>
                                 </div>
                             </div>
                             {/* Visual Chart Placeholder */}
-                            <div className="w-full h-64 bg-gradient-to-t from-zinc-50 to-transparent rounded-2xl flex items-end px-4 gap-2">
+                            <div className="w-full h-64 flex items-end outline-none select-none touch-none">
+                                <VolumeChart data={chartData} loading={loadingVolumeStats} />
                             </div>
                         </div>
 
@@ -105,12 +147,12 @@ const Dashboard = () => {
                                     <EllipsisVertical size={18} className="cursor-pointer" />
                                 </div>
                                 <div className="space-y-2">
-                                    <IntegrationItem name="Razorpay" requests="32.1K" active={activeGateways.includes("razorpay")} />
-                                    <IntegrationItem name="Stripe" requests="45.2K" active={activeGateways.includes("stripe")} />
+                                    <IntegrationItem name="Razorpay" requests="32.1K" active={activeGateways?.includes("razorpay")} />
+                                    <IntegrationItem name="Stripe" requests="45.2K" active={activeGateways?.includes("stripe")} />
                                 </div>
                             </div>
                             {/* Integrations List Footer */}
-                            <div 
+                            <div
                                 onClick={() => navigate("/gateways")}
                                 className="flex items-center gap-2 mx-auto text-sm text-[#737373] hover:text-black cursor-pointer group">
                                 <h3 className="font-medium">Manage Integrations</h3>
@@ -141,6 +183,17 @@ const StatCard = ({ icon, label, value, trend, trendColor = "text-emerald-500" }
         </div>
         <p className="text-[#737373] text-sm font-medium mb-1">{label}</p>
         <h2 className="text-2xl font-semibold tracking-tight">{value}</h2>
+    </div>
+);
+
+const StatSkeleton = () => (
+    <div className="bg-white border border-zinc-200 p-6 rounded-2xl animate-pulse">
+        <div className="flex items-center justify-between mb-4">
+            <div className="p-5 rounded-xl bg-zinc-100 w-10 h-10"></div>
+            <div className="h-3 w-12 bg-zinc-100 rounded-full"></div>
+        </div>
+        <div className="h-4 w-24 bg-zinc-100 rounded mb-2"></div>
+        <div className="h-8 w-32 bg-zinc-100 rounded"></div>
     </div>
 );
 

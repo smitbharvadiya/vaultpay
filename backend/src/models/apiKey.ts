@@ -5,6 +5,7 @@ export interface IApiKey extends Document {
     userId: mongoose.Types.ObjectId,
     name: string;
     key: string;
+    env: string;
     active: boolean;
     createdAt: Date;
 }
@@ -25,6 +26,11 @@ const apiSchema = new Schema<IApiKey>(
             type: String,
             required: true,
             unique: true,
+        },
+        env: {
+            type: String,
+            enum: ["test"],
+            default: "test",
         },
         createdAt: {
             type: Date,

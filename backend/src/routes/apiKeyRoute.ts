@@ -46,7 +46,7 @@ router.post("/generate", verifyToken, async (req, res) => {
             return res.status(400).json({ err: "API Key name already exists" });
         }
 
-        const rawKey = crypto.randomBytes(32).toString("hex");
+        const rawKey = `vp_test_${crypto.randomBytes(32).toString("hex")}`;
 
         const hashedKey = crypto.createHash("sha256").update(rawKey).digest("hex");
 
@@ -81,7 +81,8 @@ router.get("/list", verifyToken, async (req, res) => {
         const formatedKeys = keys.map((k) => ({
             id: k._id,
             name: k.name,
-            keyMasked: k.key ? k.key.slice(0, 4) + "****" + k.key.slice(-4) : "",
+            env: k.env,             
+            keyMasked: k.key ? `vp_test_${"····" + k.key.slice(-4)}` : "",
             createdAt: k.createdAt,
         }));
 

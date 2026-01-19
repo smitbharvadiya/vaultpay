@@ -86,8 +86,9 @@ const ApiKey = () => {
                             <tr className="bg-zinc-50/50">
                                 <th className="px-6 py-4 text-[11px] font-bold uppercase tracking-widest text-zinc-500 border-b border-zinc-100">Name</th>
                                 <th className="px-6 py-4 text-[11px] font-bold uppercase tracking-widest text-zinc-500 border-b border-zinc-100">Secret Key</th>
-                                <th className="px-6 py-4 text-[11px] font-bold uppercase tracking-widest text-zinc-500 border-b border-zinc-100">Created</th>
-                                <th className="px-6 py-4 border-b border-zinc-100"></th>
+                                <th className="px-6 py-4 text-[11px] font-bold uppercase tracking-widest text-zinc-500 border-b border-zinc-100">Env</th>
+                                <th className="px-6 py-4 text-[11px] font-bold uppercase tracking-widest text-zinc-500 border-b border-zinc-100">Created At</th>
+                                <th className="px-6 py-4 border-b border-zinc-100 w-0"></th>
                             </tr>
                         </thead>
 
@@ -110,6 +111,9 @@ const ApiKey = () => {
                                             </div>
                                         </td>
                                         <td className="px-6 py-4">
+                                            <span className="text-xs font-semibold text-zinc-500">{(key.env).toUpperCase()}</span>
+                                        </td>
+                                        <td className="px-6 py-4">
                                             <span className="text-xs text-zinc-500">
                                                 {new Date(key.createdAt).toLocaleDateString(undefined, {
                                                     month: 'short',
@@ -118,7 +122,7 @@ const ApiKey = () => {
                                                 })}
                                             </span>
                                         </td>
-                                        <td className="px-6 py-4 text-right">
+                                        <td className="px-6 py-4 text-right w-0">
                                             <button
                                                 onClick={() => handleKeyDelete(key.id)}
                                                 className="p-2 text-zinc-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all cursor-pointer"

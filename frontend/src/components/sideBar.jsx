@@ -88,7 +88,7 @@ const SideBar = ({ setIsLogin }) => {
 const NavItem = ({ item, isActive, onClick }) => (
     <button
         onClick={onClick}
-        className={`w-full flex justify-between items-center px-3 py-2 rounded-md text-sm font-medium transition-all duration-150 group cursor-pointer
+        className={`w-full flex justify-between items-center px-3 py-2.5 rounded-md text-sm font-medium transition-all duration-150 group cursor-pointer
             ${isActive
                 ? "bg-black text-white"
                 : "text-gray-600 hover:bg-gray-50 hover:text-black"
