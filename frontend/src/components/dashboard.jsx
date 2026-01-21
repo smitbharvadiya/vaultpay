@@ -134,7 +134,7 @@ const Dashboard = () => {
                                 </div>
                             </div>
                             {/* Visual Chart Placeholder */}
-                            <div className="w-full h-64 flex items-end outline-none select-none touch-none">
+                            <div className="w-full h-64">
                                 <VolumeChart data={chartData} loading={loadingVolumeStats} />
                             </div>
                         </div>

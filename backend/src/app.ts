@@ -126,30 +126,17 @@ app.get("/payments", verifyToken, async (req, res) => {
 
         const apiKeyId = req.query.apiKeyId as string;
 
-        if (!apiKeyId) {
-            return res.status(401).json({
-                success: false,
-                message: "Unauthorized"
-            });
-        }
+        const query: any = {
+            userId: req.userId, // 🔑 permanent ownership
+        };
 
-        const key = await apiKey.findOne({
-            _id: apiKeyId,
-            userId: req.userId,
-        });
-
-        if (!key) {
-            return res.status(403).json({
-                success: false,
-                message: "Access denied",
-            });
+        // optional filter
+        if (apiKeyId) {
+            query.apiKeyId = apiKeyId;
         }
 
         const payments = await paymentModel
-            .find({ 
-                userId: req.userId, 
-                apiKeyId: apiKeyId,
-            })
+            .find(query)
             .sort({ createdAt: -1 });
 
         return res.status(200).json({ payments });

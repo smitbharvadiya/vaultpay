@@ -44,7 +44,7 @@ const VolumeChart = ({ data, loading }) => {
 
     return (
         <ResponsiveContainer width="100%" height={280} >
-            <LineChart data={data} margin={{ top: 20, right: 10, left: 0, bottom: 0 }}>
+            <LineChart data={data} margin={{ top: 20, right: 20, left: 40, bottom: 0 }}>
                 {/* Soft horizontal grid */}
                 <CartesianGrid
                     vertical={false}

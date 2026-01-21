@@ -24,11 +24,20 @@ const Transactions = () => {
                 if (!res.ok) throw new Error("Failed to fetch API keys");
 
                 const data = await res.json();
-                setApiKeys(data.apiKeys || []);
+                const keys = data.apiKeys || [];
 
+                setApiKeys(keys);
+
+                // Validate saved key
                 const savedKey = localStorage.getItem("selectedApiKey");
-                setSelectedKey(savedKey || data.apiKeys?.[0]?.id || "");
+                const isValid = keys.some(k => k.id === savedKey);
 
+                if (isValid) {
+                    setSelectedKey(savedKey);
+                } else {
+                    setSelectedKey(""); // Default → ALL
+                    localStorage.setItem("selectedApiKey", "");
+                }
             } catch (error) {
                 console.error("ERROR: ", error);
             }
@@ -38,12 +47,11 @@ const Transactions = () => {
 
     useEffect(() => {
 
-        if (!selectedKey) return;
-
         const fetchPayments = async () => {
             setLoading(true);
             try {
-                const res = await fetch(`http://localhost:5000/payments?apiKeyId=${selectedKey}`, {
+                const query = selectedKey ? `?apiKeyId=${selectedKey}` : "";
+                const res = await fetch(`http://localhost:5000/payments${query}`, {
                     method: "GET",
                     credentials: "include",
                 });
@@ -113,13 +121,16 @@ const Transactions = () => {
                         <select
                             value={selectedKey}
                             onChange={(e) => {
-                                localStorage.setItem("selectedApiKey", e.target.value);
                                 setSelectedKey(e.target.value);
+                                localStorage.setItem("selectedApiKey", e.target.value);
                             }}
                             className="bg-gray-50 border border-gray-200 rounded-md px-2 py-1 outline-none"
                         >
+                            <option value="">All Transactions</option>
                             {apiKeys.map((key) => (
-                                <option key={key.id} value={key.id}>{key.name}</option>
+                                <option key={key.id} value={key.id}>
+                                    {key.name}
+                                </option>
                             ))}
                         </select>
                     </div>
