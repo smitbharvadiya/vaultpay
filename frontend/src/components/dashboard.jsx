@@ -25,7 +25,7 @@ const Dashboard = () => {
         const fetchVolume = async () => {
             try {
                 setLoading(true);
-                const res = await fetch("http://localhost:5000/analytics/volume", {
+                const res = await fetch("https://vaultpay-backend.onrender.com/analytics/volume", {
                     method: "GET",
                     credentials: "include",
                 })
@@ -56,7 +56,7 @@ const Dashboard = () => {
                 setLoadingVolumeStats(true);
 
                 const res = await fetch(
-                    "http://localhost:5000/analytics/volume/timeseries",
+                    "https://vaultpay-backend.onrender.com/analytics/volume/timeseries",
                     { credentials: "include" }
                 );
 

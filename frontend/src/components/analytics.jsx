@@ -12,7 +12,7 @@ const Analytics = () => {
     useEffect(() => {
         const fetchKeys = async () => {
             try {
-                const res = await fetch("http://localhost:5000/api/keys/list", {
+                const res = await fetch("https://vaultpay-backend.onrender.com/api/keys/list", {
                     method: "GET",
                     credentials: "include",
                 })
@@ -41,7 +41,7 @@ const Analytics = () => {
 
         const fetchAnalytics = async () => {
             try {
-                const res = await fetch(`http://localhost:5000/analytics?apiKeyId=${selectedKey}`, {
+                const res = await fetch(`https://vaultpay-backend.onrender.com/analytics?apiKeyId=${selectedKey}`, {
                     method: "GET",
                     credentials: "include",
                 });

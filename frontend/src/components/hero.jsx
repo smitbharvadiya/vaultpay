@@ -11,7 +11,7 @@ const Hero = () => {
         setApiKey(null);
 
         try {
-            const res = await fetch("http://localhost:5000/api/keys/generate", {
+            const res = await fetch("https://vaultpay-backend.onrender.com/api/keys/generate", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"

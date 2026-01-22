@@ -38,7 +38,7 @@ const GatewayConnection = () => {
 
             setLoading(true);
 
-            const res = await fetch(`http://localhost:5000/gateways/${activeGateway}/connect`, {
+            const res = await fetch(`https://vaultpay-backend.onrender.com/gateways/${activeGateway}/connect`, {
                 method: "POST",
                 credentials: "include",
                 headers: { "Content-Type": "application/json" },
@@ -68,7 +68,7 @@ const GatewayConnection = () => {
         const fetchStatus = async () => {
             for (const gateway of gateways) {
                 try {
-                    const res = await fetch(`http://localhost:5000/gateways/${gateway.name}/status`, {
+                    const res = await fetch(`https://vaultpay-backend.onrender.com/gateways/${gateway.name}/status`, {
                         method: "GET",
                         credentials: "include",
                     })
@@ -92,7 +92,7 @@ const GatewayConnection = () => {
 
     const handleDeleteGateway = async (gateway) => {
         try {
-            const res = await fetch(`http://localhost:5000/gateways/${gateway}`, {
+            const res = await fetch(`https://vaultpay-backend.onrender.com/gateways/${gateway}`, {
                 method: "DELETE",
                 credentials: "include",
             })
