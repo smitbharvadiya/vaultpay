@@ -22,10 +22,14 @@ const app = express();
 app.use(cors({
   origin: [
     "https://vaultpay-one.vercel.app",
-    "http://localhost:5173"
+    "http://localhost:5173",
   ],
-  credentials: true
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true,
 }));
+
+app.options("*", cors());
 
 
 app.use(express.json());

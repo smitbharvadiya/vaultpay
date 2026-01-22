@@ -5,13 +5,13 @@ import { connectRedis } from "./src/redis";
 
 dotenv.config();
 
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 
 const startServer = async () => {
   try {
     await connectRedis();
 
-    mongoose
+    await mongoose
       .connect(process.env.MONGO_URI!)
       .then(() => console.log("✅ MongoDB connected"))
       .catch((err) => console.error("❌ MongoDB connection error:", err));
