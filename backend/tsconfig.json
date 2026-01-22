@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "ES2020",
     "module": "nodenext",
-    "rootDir": "./src",
+    "rootDir": "./",
     "outDir": "./dist",
     "moduleResolution": "nodenext",
     "esModuleInterop": true,
@@ -12,6 +12,6 @@
     "types": ["node", "jest"],
     "resolveJsonModule": true
   },
-  "include": ["src", "src/__tests__/RazorpayAdapter.test.ts", "src/types/**/*.d.ts"],
+  "include": ["server.ts", "src/**/*.ts"],
   "exclude": ["node_modules"]
 }
