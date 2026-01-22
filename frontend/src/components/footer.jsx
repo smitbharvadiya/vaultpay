@@ -56,7 +56,7 @@ const Footer = () => {
         {/* Bottom Bar */}
         <div className="pt-8 border-t-1 border-[#dfdfdf] flex flex-col md:flex-row justify-between items-center gap-6">
           <p className="text-xs text-slate-400 font-medium">
-            © 2025 VaultPay Technologies Inc. Built for the modern web.
+            © 2026 VaultPay. Built for the modern web.
           </p>
           
           <div className="flex items-center gap-6 text-slate-400">
