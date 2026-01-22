@@ -21,7 +21,7 @@ const app = express();
 
 app.use(cors({
   origin: [
-    "https://vaultpay-4ez5.onrender.com",
+    "https://vaultpay-one.vercel.app",
     "http://localhost:5173"
   ],
   credentials: true
