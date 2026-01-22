@@ -1,7 +1,6 @@
 import mongoose, { Schema, Document } from 'mongoose';
-import { Interface } from 'readline';
 
-mongoose.connect("mongodb://localhost:27017/vaultpay");
+// mongoose.connect("mongodb://localhost:27017/vaultpay");
 
 export interface IUser extends Document{
     email: string;

@@ -12,7 +12,7 @@ export const connectRedis = async () => {
 
   if (!redis.isOpen) {
     await redis.connect();
-    console.log("Redis connected");
+    console.log("✅ Redis connected");
   }
 
 }
