@@ -29,7 +29,7 @@ function App() {
 
     const checkAuth = async () => {
       try {
-        const res = await fetch("http://localhost:5000/checkAuth", {
+        const res = await fetch("https://vaultpay-4ez5.onrender.com/checkAuth", {
           method: "GET",
           credentials: 'include',
         })

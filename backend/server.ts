@@ -5,8 +5,6 @@ import { connectRedis } from "./src/redis";
 
 dotenv.config();
 
-const PORT = 5000;
-
 const startServer = async () => {
   try {
     await connectRedis();
@@ -16,8 +14,8 @@ const startServer = async () => {
       .then(() => console.log("✅ MongoDB connected"))
       .catch((err) => console.error("❌ MongoDB connection error:", err));
 
-    app.listen(PORT, () => {
-      console.log(`🚀 VaultPay backend running on port ${PORT}`);
+    app.listen(() => {
+      console.log("🚀 VaultPay backend running...");
     });
   } catch (err) {
     console.error("❌ Server failed to start:", err);
