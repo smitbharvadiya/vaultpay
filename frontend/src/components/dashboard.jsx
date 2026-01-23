@@ -1,9 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-    FiHome, FiKey, FiActivity, FiGlobe, FiSettings,
-    FiHelpCircle, FiLogOut, FiArrowUpRight, FiZap
-} from "react-icons/fi";
-
+import { SiRazorpay, SiStripe } from "react-icons/si";
 import { TrendingUp, CreditCard, Activity, Zap, EllipsisVertical, ArrowRight } from 'lucide-react';
 import { useNavigate } from "react-router-dom";
 import VolumeChart from "./volumeChart";
@@ -147,8 +143,8 @@ const Dashboard = () => {
                                     <EllipsisVertical size={18} className="cursor-pointer" />
                                 </div>
                                 <div className="space-y-2">
-                                    <IntegrationItem name="Razorpay" requests="32.1K" active={activeGateways?.includes("razorpay")} />
-                                    <IntegrationItem name="Stripe" requests="45.2K" active={activeGateways?.includes("stripe")} />
+                                    <IntegrationItem name="Razorpay" requests="32.1K" icon={<SiRazorpay />} active={activeGateways?.includes("razorpay")} />
+                                    <IntegrationItem name="Stripe" requests="45.2K" icon={<SiStripe />} active={activeGateways?.includes("stripe")} />
                                 </div>
                             </div>
                             {/* Integrations List Footer */}
@@ -197,11 +193,11 @@ const StatSkeleton = () => (
     </div>
 );
 
-const IntegrationItem = ({ name, requests, active }) => (
+const IntegrationItem = ({ name, requests, icon, active }) => (
     <div className="flex items-center justify-between p-3 rounded-xl hover:bg-gray-50 group cursor-pointer">
         <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-[#f5f5f5] rounded-xl flex items-center justify-center border border-zinc-100 group-hover:bg-white transition-colors">
-                <FiGlobe className="text-zinc-400" />
+                {icon}
             </div>
             <div>
                 <p className="text-sm font-medium text-zinc-900">{name}</p>
