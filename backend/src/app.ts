@@ -20,13 +20,13 @@ import apiKey from './models/apiKey';
 const app = express();
 
 app.use(cors({
-  origin: [
-    "https://vaultpay-one.vercel.app",
-    "http://localhost:5173",
-  ],
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
-  credentials: true,
+    origin: [
+        "https://vaultpay-one.vercel.app",
+        "http://localhost:5173",
+    ],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
 }));
 
 app.use(express.json());
@@ -65,7 +65,13 @@ app.post('/signup', async (req, res) => {
                 );
                 console.log("JWT Token: ", token);
 
-                res.cookie("token", token);
+                res.cookie("token", token, {
+                    httpOnly: true,
+                    secure: true,
+                    sameSite: "none",
+                    maxAge: 60 * 60 * 1000,
+                });
+
 
                 res.status(201).json({
                     message: 'User Created Succesfully',
@@ -98,7 +104,14 @@ app.post("/login", async (req, res) => {
             process.env.JWT_SECRET!,
             { expiresIn: '1h' }
         );
-        res.cookie("token", token);
+
+        res.cookie("token", token, {
+            httpOnly: true,
+            secure: true,
+            sameSite: "none",
+            maxAge: 60 * 60 * 1000,
+        });
+
 
         return res.status(200).json({ message: "Login successful" });
 
@@ -109,7 +122,13 @@ app.post("/login", async (req, res) => {
 });
 
 app.post("/logout", (req, res) => {
-    res.clearCookie("token");
+    
+    res.clearCookie("token", {
+        httpOnly: true,
+        secure: true,
+        sameSite: "none",
+    });
+
     res.json({ message: "Logout Succesfull" });
 });
 
