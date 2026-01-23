@@ -76,7 +76,7 @@ function App() {
             <Route path="/" element={
               <>
                 <Header setOpenSignUp={setOpenSignUp} setOpenLogin={setOpenLogin} isLogin={isLogin} setIsLogin={setIsLogin} />
-                <Main isLogin={isLogin} setOpenLogin={setOpenLogin} />
+                <Main isLogin={isLogin} setOpenSignUp={setOpenSignUp} />
               </>
             } />
 

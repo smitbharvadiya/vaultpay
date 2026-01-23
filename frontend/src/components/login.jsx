@@ -50,7 +50,7 @@ const Login = ({ openLogin, setOpenLogin, setIsLogin, setOpenSignUp }) => {
                 {/* Close */}
                 <button
                     onClick={() => setOpenLogin(false)}
-                    className="absolute top-4 right-4 text-slate-400 hover:text-slate-900 transition-colors p-1 hover:bg-slate-100 rounded-full"
+                    className="absolute top-4 right-4 text-slate-400 hover:text-slate-900 transition-colors p-1 hover:bg-slate-100 rounded-full cursor-pointer"
                 >
                     <IoCloseOutline size={24} />
                 </button>

@@ -4,16 +4,13 @@ import paypalLogo from "../assets/paypal-logo.svg";
 import cashfreeLogo from "../assets/cashfree-logo.svg";
 import illustration from "../assets/illustration1.png";
 import { BsArrowDownRightCircleFill } from "react-icons/bs";
-import { GoShieldCheck } from "react-icons/go";
-import { FaCheck } from "react-icons/fa6";
-import { MdAttachMoney } from "react-icons/md";
 import Footer from "./footer";
+import { ArrowRight } from 'lucide-react';
+import { useNavigate } from "react-router-dom";
 
-const Landing = ({ setOpenLogin }) => {
+const Landing = ({ setOpenSignUp }) => {
 
-  const handleGenerateKey = () => {
-    setOpenLogin(true);
-  };
+  const navigate = useNavigate();
 
   return (
     <div className="bg-white">
@@ -40,9 +37,9 @@ const Landing = ({ setOpenLogin }) => {
         <div className="relative z-10 flex flex-col items-center text-center px-4">
 
           {/* THE BADGE: Now inside the flex column */}
-          <div className="mb-4 shadow-md inline-flex items-center rounded-full border border-slate-200 bg-slate-50/50 pl-1 pr-2 py-1 text-xs font-semibold text-teal-700 backdrop-blur-sm gap-2 ">
+          <div className="mb-6 shadow-md inline-flex items-center rounded-full border border-slate-200 bg-[#f5f5f5] px-4 py-2 text-xs font-medium text-black backdrop-blur-sm gap-2 ">
             <BsArrowDownRightCircleFill size={16} />
-            <span>All in One Place</span>
+            <span className="tracking-wide">All in One Place</span> 
           </div>
 
           <div className="font-bricolage font-medium tracking-tighter">
@@ -50,9 +47,28 @@ const Landing = ({ setOpenLogin }) => {
             <h1 className="text-6xl md:text-7xl">Not workload.</h1>
           </div>
 
-          <p className="mt-8 font-geist text-zinc-400 text-lg md:text-lg max-w-xl mx-auto tracking-tight">
+          <p className="mt-6 font-geist text-zinc-400 text-lg md:text-lg max-w-xl mx-auto tracking-tight">
             The developer-first API layer that standardizes your payment flow across global gateways.
           </p>
+
+          <div className="flex flex-col sm:flex-row items-center gap-6 pt-10">
+            {/* Primary Action: Get Started */}
+            <button 
+              onClick={() => setOpenSignUp(true)}
+              className="group relative flex items-center justify-center px-8 py-3 font-semibold text-white transition-all duration-300 bg-black rounded-full hover:bg-slate-900 hover:shadow-lg active:scale-95 cursor-pointer">
+              <span>Get Started</span>
+              <span className="inline-flex items-center ml-2 transition-transform duration-300 group-hover:translate-x-1">
+                <ArrowRight size={18} strokeWidth={2.5} />
+              </span>
+            </button>
+
+            {/* Secondary Action: View Documentation */}
+            <button
+              onClick={() => navigate("/docs")} 
+              className="px-8 text-sm font-medium text-black hover:text-gray-400 transition-all duration-300 active:scale-95 tracking-wide cursor-pointer">
+              View Documentation
+            </button>
+          </div>
 
         </div>
       </div>
