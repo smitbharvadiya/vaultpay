@@ -18,7 +18,7 @@ const GatewayConnection = () => {
     const menuRef = useRef(null);
 
     const gateways = [{ name: "razorpay", desc: "Accept payments in India via UPI, Cards, and Netbanking." },
-    { name: "stripe", desc: "Global payments for modern platforms" }
+    { name: "stripe", desc: "Global payments with support for 135+ currencies." }
     ];
 
     const handleGatewayAuth = async () => {
@@ -134,6 +134,7 @@ const GatewayConnection = () => {
         <div className="p-8 max-w-4xl">
 
             <div className="pb-2">
+                <p className=" text-xs text-[#737373] font-semibold uppercase tracking-widest mb-1">Integrations</p>
                 <h2 className="text-3xl font-bold tracking-tight text-zinc-900 mb-2">Payment Gateways</h2>
                 <p className="text-zinc-500 max-w-lg mb-2">
                     Connect and manage your payment providers. Use multiple gateways simultaneously to optimize conversion and redundancy.
@@ -147,7 +148,6 @@ const GatewayConnection = () => {
                     <p className="text-xs text-amber-700 mt-1 leading-relaxed">
                         VaultPay is currently running in <strong>Demonstration Mode</strong>.
                         Please use only Test credentials from your providers.
-                        Actual payment processing is disabled to protect your live data.
                     </p>
                 </div>
             </div>

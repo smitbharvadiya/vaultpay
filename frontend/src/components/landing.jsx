@@ -47,7 +47,7 @@ const Landing = ({ setOpenSignUp }) => {
             <h1 className="text-6xl md:text-7xl">Not workload.</h1>
           </div>
 
-          <p className="mt-6 font-geist text-zinc-400 text-lg md:text-lg max-w-xl mx-auto tracking-tight">
+          <p className="mt-6 font-geist text-[#737373] text-lg md:text-lg max-w-2xl mx-auto leading-relaxed">
             The developer-first API layer that standardizes your payment flow across global gateways.
           </p>
 
