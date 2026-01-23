@@ -15,7 +15,7 @@ const Login = ({ openLogin, setOpenLogin, setIsLogin, setOpenSignUp }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const res = await fetch("https://vaultpay-backend.onrender.com/login", {
+            const res = await fetch("https://vaultpay-4ez5.onrender.com/login", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email, password }),

@@ -16,7 +16,7 @@ const Transactions = () => {
 
         const fetchKeys = async () => {
             try {
-                const res = await fetch("https://vaultpay-backend.onrender.com/api/keys/list", {
+                const res = await fetch("https://vaultpay-4ez5.onrender.com/api/keys/list", {
                     method: "GET",
                     credentials: "include",
                 });
@@ -51,7 +51,7 @@ const Transactions = () => {
             setLoading(true);
             try {
                 const query = selectedKey ? `?apiKeyId=${selectedKey}` : "";
-                const res = await fetch(`https://vaultpay-backend.onrender.com/payments${query}`, {
+                const res = await fetch(`https://vaultpay-4ez5.onrender.com/payments${query}`, {
                     method: "GET",
                     credentials: "include",
                 });

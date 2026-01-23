@@ -19,7 +19,7 @@ const SideBar = ({ setIsLogin }) => {
 
             localStorage.removeItem("selectedApiKey");
 
-            const res = await fetch("https://vaultpay-backend.onrender.com/logout", {
+            const res = await fetch("https://vaultpay-4ez5.onrender.com/logout", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"

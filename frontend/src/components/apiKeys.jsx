@@ -10,7 +10,7 @@ const ApiKey = () => {
     useEffect(() => {
         const fetchKeys = async () => {
             try {
-                const res = await fetch("https://vaultpay-backend.onrender.com/api/keys/list", {
+                const res = await fetch("https://vaultpay-4ez5.onrender.com/api/keys/list", {
                     method: "GET",
                     credentials: "include",
                 });
@@ -27,7 +27,7 @@ const ApiKey = () => {
     const handleKeyDelete = async (id) => {
         if (!confirm("Are you sure you want to delete this API key? This action cannot be undone.")) return;
         try {
-            const res = await fetch(`https://vaultpay-backend.onrender.com/api/keys/delete/${id}`, {
+            const res = await fetch(`https://vaultpay-4ez5.onrender.com/api/keys/delete/${id}`, {
                 method: "DELETE",
                 credentials: "include",
             });

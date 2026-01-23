@@ -22,7 +22,7 @@ const CreateKey = () => {
         setLoading(true);
         try {
 
-            const res = await fetch("https://vaultpay-backend.onrender.com/api/keys/generate", {
+            const res = await fetch("https://vaultpay-4ez5.onrender.com/api/keys/generate", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
