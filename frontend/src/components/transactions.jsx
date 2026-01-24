@@ -132,20 +132,22 @@ const Transactions = () => {
                         />
                     </div>
 
-                    <div className="flex items-center gap-4">
+                    <div className="flex flex-wrap items-center gap-5 text-sm text-gray-600">
 
-                        <div className="flex items-center gap-2 text-sm text-gray-600">
-                            <Filter size={16} />
-                            <span>Filter by:</span>
+                        {/* API Key Filter */}
+                        <div className="flex items-center gap-2">
+                            <Filter size={16} className="text-gray-400" />
+                            <span className="font-medium">Key</span>
+
                             <select
                                 value={selectedKey}
                                 onChange={(e) => {
                                     setSelectedKey(e.target.value);
                                     localStorage.setItem("selectedApiKey", e.target.value);
                                 }}
-                                className="bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 outline-none"
+                                className="bg-gray-50 border border-gray-200 rounded-lg px-4 py-2 pr-10 text-sm outline-none focus:ring-2 focus:ring-gray-300 focus:border-gray-900 transition"
                             >
-                                <option value="">All</option>
+                                <option value="">All Keys</option>
                                 {apiKeys.map((key) => (
                                     <option key={key.id} value={key.id}>
                                         {key.name}
@@ -154,21 +156,28 @@ const Transactions = () => {
                             </select>
                         </div>
 
-                        <div className="flex items-center gap-2 text-sm text-gray-600 border-l pl-4 border-gray-100">
-                            <span>Status:</span>
+                        {/* Divider */}
+                        <div className="hidden sm:block h-6 w-px bg-gray-200" />
+
+                        {/* Status Filter */}
+                        <div className="flex items-center gap-2">
+                            <span className="font-medium">Status</span>
+
                             <select
                                 value={selectedStatus}
                                 onChange={(e) => setSelectedStatus(e.target.value)}
-                                className="bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 outline-none text-sm"
+                                className="bg-gray-50 border border-gray-200 rounded-lg px-4 py-2 pr-10 text-sm outline-none focus:ring-2 focus:ring-gray-300 focus:border-gray-900 transition"
                             >
-                                <option value="">All</option>
+                                <option value="">All Status</option>
                                 <option value="created">Created</option>
                                 <option value="failed">Failed</option>
                                 <option value="pending">Pending</option>
                                 <option value="captured">Captured</option>
                             </select>
                         </div>
+
                     </div>
+
 
                 </div>
 
