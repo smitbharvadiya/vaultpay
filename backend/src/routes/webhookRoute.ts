@@ -2,6 +2,7 @@ import express from 'express';
 import { RazorpayWebhookAdapter } from '../adapters/RazorpayWebhookAdapter';
 import verifyToken from '../middleware/verifyToken';
 import crypto from 'crypto';
+import bcrypt from 'bcrypt';
 import webhookConfig from '../models/webhookConfig';
 
 const router = express.Router();
@@ -15,10 +16,12 @@ router.post("/secret/generate", verifyToken, async (req, res) => {
 
     const webhookUrl = "https://vaultpay-4ez5.onrender.com/webhook/razorpay";
 
+    const hashedSecret = await bcrypt.hash(secret, 10);
+
     const webhook = await webhookConfig.findOneAndUpdate(
       { userId, provider: "razorpay" },
       {
-        secret,
+        secret: hashedSecret,
         webhookUrl,
         provider: "razorpay",
         userId,
