@@ -1,7 +1,5 @@
 import mongoose, { Schema, Document } from 'mongoose';
 
-// mongoose.connect("mongodb://localhost:27017/vaultpay");
-
 export interface IUser extends Document{
     email: string;
     password: string;

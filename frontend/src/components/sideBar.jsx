@@ -4,9 +4,10 @@ import { FiKey } from "react-icons/fi";
 import { RiSecurePaymentFill } from "react-icons/ri";
 import { MdKeyboardArrowRight, MdOutlinePayment } from "react-icons/md";
 import { useNavigate, useLocation } from "react-router-dom";
-import { LuLayoutDashboard } from "react-icons/lu";
+import { LuLayoutDashboard, LuWebhook } from "react-icons/lu";
 import { PanelLeft, PanelLeftClose } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+
 
 const SideBar = ({ setIsLogin }) => {
     const navigate = useNavigate();
@@ -41,6 +42,7 @@ const SideBar = ({ setIsLogin }) => {
         { name: "Analytics", icon: <FaChartBar />, path: "/analytics" },
         { name: "Gateways", icon: <RiSecurePaymentFill />, path: "/gateways" },
         { name: "Transactions", icon: <MdOutlinePayment />, path: "/Transactions" },
+        { name: "Webhooks", icon: <LuWebhook />, path: "/webhooks" },
     ];
 
     const bottomItems = [

@@ -151,7 +151,7 @@ app.get("/payments", verifyToken, async (req, res) => {
         const apiKeyId = req.query.apiKeyId as string;
 
         const query: any = {
-            userId: req.userId, // 🔑 permanent ownership
+            userId: req.userId, 
         };
 
         // optional filter

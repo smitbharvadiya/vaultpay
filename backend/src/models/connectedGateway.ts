@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document} from "mongoose";
+import mongoose, { Schema, Document } from "mongoose";
 
 interface EncryptedCredentials {
   iv: string;
@@ -58,7 +58,6 @@ const connectedGatewaySchema = new Schema<IConnectedGateway>(
       enum: ["CONNECTED", "DISCONNECTED"],
       default: "CONNECTED",
     },
-
     is_active: {
       type: Boolean,
       default: true,

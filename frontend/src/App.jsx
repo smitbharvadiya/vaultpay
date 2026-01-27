@@ -15,6 +15,7 @@ import Docs from './components/docs';
 import GatewayConnection from './components/gatewayConnect';
 import Transactions from './components/transactions';
 import Dashboard from './components/dashboard';
+import Webhooks from './components/webhooks';
 
 function App() {
 
@@ -99,6 +100,7 @@ function App() {
               <Route path="/analytics" element={<Analytics />} />
               <Route path="/gateways" element={<GatewayConnection />} />
               <Route path="/transactions" element={<Transactions />} />
+              <Route path="/webhooks" element={<Webhooks />} />
             </Route>
           </Routes>
         </div>
