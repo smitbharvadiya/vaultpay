@@ -29,7 +29,7 @@ router.post("/secret/generate", verifyToken, async (req, res) => {
     );
 
     res.status(200).json({
-      webhookUrl: `${process.env.VITE_API_BASE_URL}/webhooks/razorpay/${webhookId}`,
+      webhookUrl: `https://vaultpay-4ez5.onrender.com/webhooks/razorpay/${webhookId}`,
       secret: webhook.secret,
     });
 
