@@ -5,6 +5,7 @@ import crypto from 'crypto';
 import webhookConfig from '../models/webhookConfig';
 import { encrypt } from '../utils/encryption';
 import { nanoid } from 'nanoid';
+import webhookEvent from '../models/webhookEvent';
 
 const router = express.Router();
 
@@ -18,7 +19,7 @@ router.post("/secret/generate", verifyToken, async (req, res) => {
     const webhookSecret = crypto.randomBytes(32).toString("hex");
 
     const webhook = await webhookConfig.findOneAndUpdate(
-      { webhookId, userId },
+      { userId, provider: "razorpay" },
       {
         webhookId,
         secret: webhookSecret,
@@ -51,10 +52,24 @@ router.post("/razorpay/:webhookId", express.raw({ type: "*/*" }), async (req: an
     if (!webhook) {
       return res.status(404).send("Webhook not found");
     }
-    
+
     const adapter = new RazorpayWebhookAdapter();
 
     const event = adapter.verifyWebhook(req, webhook.secret);
+
+    try {
+      await webhookEvent.create({
+        eventId: event.id,
+        provider: "razorpay",
+        webhookId,
+      });
+    } catch (err: any) {
+      if (err.code === 11000) {
+        return res.status(200).json({ ignored: true });
+      }
+      throw err;
+    }
+
     await adapter.normalizeWebhook(event);
 
     return res.status(200).json({ success: "Signature verified succesfully" });

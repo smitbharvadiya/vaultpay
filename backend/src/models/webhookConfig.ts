@@ -31,6 +31,12 @@ const webhookSchema = new mongoose.Schema(
     },
   },
   { timestamps: true }
+);  
+
+webhookSchema.index(
+  { userId: 1, provider: 1 },
+  { unique: true }
 );
+
 
 export default mongoose.model("Webhook", webhookSchema);
