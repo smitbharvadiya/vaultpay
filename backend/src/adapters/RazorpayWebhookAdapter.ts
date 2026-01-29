@@ -4,10 +4,10 @@ import { WebhookAdapter } from "./ProviderAdapter";
 
 export class RazorpayWebhookAdapter implements WebhookAdapter {
 
-  verifyWebhook(req: any) {
+  verifyWebhook(req: any, secret: any) {
         const webhookBody = req.body;
         const webhookSignature = req.get("X-Razorpay-Signature") as string;
-        const webhookSecret = process.env.RAZORPAY_WEBHOOK_SECRET as string;
+        const webhookSecret = secret as string;
 
         if (!validateWebhookSignature(JSON.stringify(webhookBody), webhookSignature, webhookSecret)) {
             console.log("Signature validation failed!");

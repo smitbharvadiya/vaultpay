@@ -68,7 +68,6 @@ export class RazorpayAdapter implements ProviderAdaptor {
         speed?: "normal" | "optimum";
     }) {
         try {
-            // Build refund params dynamically
             const refundParams: any = {
                 speed: params.speed || "normal",
             };

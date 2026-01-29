@@ -2,8 +2,9 @@ import express from 'express';
 import { RazorpayWebhookAdapter } from '../adapters/RazorpayWebhookAdapter';
 import verifyToken from '../middleware/verifyToken';
 import crypto from 'crypto';
-import bcrypt from 'bcrypt';
 import webhookConfig from '../models/webhookConfig';
+import { encrypt } from '../utils/encryption';
+import { nanoid } from 'nanoid';
 
 const router = express.Router();
 
@@ -12,17 +13,15 @@ router.post("/secret/generate", verifyToken, async (req, res) => {
   try {
     const userId = req.userId;
 
-    const secret = crypto.randomBytes(32).toString("hex");
+    const webhookId = "wh_" + nanoid(21);
 
-    const webhookUrl = "https://vaultpay-4ez5.onrender.com/webhook/razorpay";
-
-    const hashedSecret = await bcrypt.hash(secret, 10);
+    const webhookSecret = crypto.randomBytes(32).toString("hex");
 
     const webhook = await webhookConfig.findOneAndUpdate(
-      { userId, provider: "razorpay" },
+      { webhookId, userId },
       {
-        secret: hashedSecret,
-        webhookUrl,
+        webhookId,
+        secret: webhookSecret,
         provider: "razorpay",
         userId,
       },
@@ -30,7 +29,7 @@ router.post("/secret/generate", verifyToken, async (req, res) => {
     );
 
     res.status(200).json({
-      webhookUrl: webhook.webhookUrl,
+      webhookUrl: `${process.env.VITE_API_BASE_URL}/webhooks/razorpay/${webhookId}`,
       secret: webhook.secret,
     });
 
@@ -42,12 +41,20 @@ router.post("/secret/generate", verifyToken, async (req, res) => {
 
 })
 
-router.post("/razorpay", express.raw({ type: "*/*" }), async (req: any, res: any) => {
+router.post("/razorpay/:webhookId", express.raw({ type: "*/*" }), async (req: any, res: any) => {
 
   try {
+    const { webhookId } = req.params;
+
+    const webhook = await webhookConfig.findOne({ webhookId, status: "active" });
+
+    if (!webhook) {
+      return res.status(404).send("Webhook not found");
+    }
+    
     const adapter = new RazorpayWebhookAdapter();
 
-    const event = adapter.verifyWebhook(req);
+    const event = adapter.verifyWebhook(req, webhook.secret);
     await adapter.normalizeWebhook(event);
 
     return res.status(200).json({ success: "Signature verified succesfully" });

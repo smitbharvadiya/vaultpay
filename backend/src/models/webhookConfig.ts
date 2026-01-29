@@ -2,6 +2,11 @@ import mongoose from "mongoose";
 
 const webhookSchema = new mongoose.Schema(
   {
+    webhookId: {
+      type: String,
+      unique: true,
+      required: true,
+    },
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
@@ -12,13 +17,14 @@ const webhookSchema = new mongoose.Schema(
       enum: ["razorpay", "stripe"],
       required: true,
     },
-    webhookUrl: {
-      type: String,
-      required: true,
-    },
     secret: {
       type: String,
       required: true,
+    },
+    status: {
+      type: String,
+      enum: ["active", "disabled"],
+      default: "active",
     },
     lastEventAt: {
       type: Date,

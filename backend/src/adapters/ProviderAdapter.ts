@@ -28,6 +28,6 @@ export interface ProviderAdaptor {
 }
 
 export interface WebhookAdapter {
-  verifyWebhook(req: any): any;
+  verifyWebhook(req: any, secret: any): any;
   normalizeWebhook(event: any): Promise<any>;
 }
