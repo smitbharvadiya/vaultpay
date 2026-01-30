@@ -15,8 +15,6 @@ const GatewayConnection = () => {
     const [openMenu, setOpenMenu] = useState(null);
     const [activeGateway, setActiveGateway] = useState(null);
 
-    const menuRef = useRef(null);
-
     const gateways = [{ name: "razorpay", desc: "Accept payments in India via UPI, Cards, and Netbanking." },
     { name: "stripe", desc: "Global payments with support for 135+ currencies." }
     ];
@@ -115,20 +113,6 @@ const GatewayConnection = () => {
         }
     }
 
-    useEffect(() => {
-        const handleClickOutside = (event) => {
-            if (menuRef.current && !menuRef.current.contains(event.target)) {
-                setOpenMenu(null);
-            }
-        };
-
-        document.addEventListener("mousedown", handleClickOutside);
-
-        return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
-        };
-    }, []);
-
 
     return (
         <div className="p-8 max-w-4xl">
@@ -178,7 +162,7 @@ const GatewayConnection = () => {
                                     )}
                                 </div>
 
-                                <div className="relative" ref={menuRef}>
+                                <div className="relative">
                                     <button
                                         onClick={() =>
                                             setOpenMenu(openMenu === gateway.name ? null : gateway.name)

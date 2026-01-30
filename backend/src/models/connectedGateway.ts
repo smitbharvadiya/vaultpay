@@ -17,7 +17,7 @@ const encryptedFieldSchema = new mongoose.Schema(
 
 export interface IConnectedGateway {
   userId: mongoose.Types.ObjectId;
-  provider: "razorpay" | "stripe" | "paypal";
+  provider: "razorpay" | "stripe";
   env: "test";
   type: "api_key" | "oauth";
   credentials: EncryptedCredentials;

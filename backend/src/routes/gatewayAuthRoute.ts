@@ -2,7 +2,6 @@ import express from "express";
 import verifyToken from "../middleware/verifyToken";
 import { encrypt } from "../utils/encryption";
 import ConnectedGateway from "../models/connectedGateway";
-import Stripe from "stripe";
 
 const router = express.Router();
 
@@ -120,6 +119,8 @@ router.post("/stripe/connect", verifyToken, async (req, res) => {
             env: "test",
             type: "api_key",
             credentials: encryptedCredentials,
+            status: "CONNECTED",
+            is_active: true
         });
 
         return res.status(200).json({
