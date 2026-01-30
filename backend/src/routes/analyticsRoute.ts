@@ -90,10 +90,8 @@ router.get("/volume", verifyToken, async (req, res) => {
         const usdToInr = rateData.rates.INR;
 
         let totalInrPaise = 0;
-        let totalTransactions = 0;
 
         for (const row of payments) {
-            totalTransactions += row.totalTransactions;
 
             if (row._id === "INR") {
                 totalInrPaise += row.totalVolume;
@@ -106,16 +104,24 @@ router.get("/volume", verifyToken, async (req, res) => {
             }
         }
 
-        const successTransactions = totalTransactions;
-
-        const totalAttempts = await paymentModel.countDocuments({
+        const successfulTransactions = await paymentModel.countDocuments({
             userId: req.userId,
+            status: "CAPTURED",
         });
 
+
+        const failedTransactions = await paymentModel.countDocuments({
+            userId: req.userId,
+            status: "FAILED",
+        });
+
+        const totalConsidered = successfulTransactions + failedTransactions;
+
         const successRate =
-            totalAttempts === 0
+            totalConsidered === 0
                 ? 0
-                : Math.round((successTransactions / totalAttempts) * 100);
+                : Math.round((successfulTransactions / totalConsidered) * 100);
+
 
         const gateways = await connectedGateway.find({
             userId: req.userId,
@@ -129,12 +135,11 @@ router.get("/volume", verifyToken, async (req, res) => {
 
         const activeAPIs = await apiKey.countDocuments({ userId: req.userId });
 
-
         return res.status(200).json({
             success: true,
             data: {
                 totalVolume: totalInrPaise,
-                totalTransactions,
+                totalTransactions: successfulTransactions,
                 currency: "INR",
                 activeGateways,
                 successRate,
