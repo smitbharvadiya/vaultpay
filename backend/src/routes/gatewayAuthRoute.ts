@@ -158,11 +158,12 @@ router.get("/status/:gateway", verifyToken, async (req, res) => {
     }
 });
 
-router.delete("/razorpay", verifyToken, async (req, res) => {
+router.delete("/:gateway", verifyToken, async (req, res) => {
     try {
+        const { gateway } = req.params;
         const userId = req.userId;
 
-        const deleted = await ConnectedGateway.findOneAndDelete({ userId, provider: 'razorpay' });
+        const deleted = await ConnectedGateway.findOneAndDelete({ userId, provider: gateway });
 
         if (!deleted) return res.status(404).json({ message: "Gateway not found" });
 
