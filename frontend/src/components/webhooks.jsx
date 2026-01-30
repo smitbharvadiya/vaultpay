@@ -1,136 +1,283 @@
 import React, { useEffect, useState } from "react";
-import { Settings, CheckCircle, ArrowRight, Info } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  Settings,
+  CheckCircle2,
+  ArrowRight,
+  Info,
+  Copy,
+  Eye,
+  EyeOff,
+  Zap,
+  Lock,
+  Globe,
+  ArrowUpRight,
+} from "lucide-react";
 
 const Webhook = () => {
-  const [activeWebhook, setActiveWebhook] = useState("");
+  const [activeWebhook, setActiveWebhook] = useState(null);
   const [webhookURL, setWebhookURL] = useState("");
   const [webhookSecret, setWebhookSecret] = useState("");
   const [loading, setLoading] = useState(false);
+  const [revealSecret, setRevealSecret] = useState(false);
+  const [copiedField, setCopiedField] = useState(null);
+  const [connections, setConnections] = useState({
+    razorpay: false,
+    stripe: false,
+  });
 
   const gateways = [
-    { name: "Razorpay", status: "Connected", color: "bg-blue-500" },
-    { name: "Stripe", status: "Active", color: "bg-indigo-600" },
+    { name: "Razorpay", status: "Connected", type: "Domestic" },
+    { name: "Stripe", status: "Coming Soon", type: "International" },
   ];
 
-  const generateWebhookCredentials = async () => {
+  const generateCredentials = async (provider) => {
     try {
       setLoading(true);
 
-      const res = await fetch(
-        "https://vaultpay-4ez5.onrender.com/webhook/secret/generate",
-        {
-          method: "POST",
-          credentials: "include",
-        }
-      );
-
-      if (!res.ok) {
-        throw new Error("Failed to generate webhook credentials");
-      }
+      const res = await fetch("https://vaultpay-4ez5.onrender.com/webhook/secret/generate", {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ provider }),
+      });
 
       const data = await res.json();
 
+      if (!res.ok) throw new Error(data.message || "webhook credentials failed to generate");
+
       setWebhookURL(data.webhookUrl);
       setWebhookSecret(data.secret);
+
+      setConnections(prev => ({
+        ...prev,
+        [provider]: true,
+      }));
+
     } catch (err) {
-      console.error("Webhook generation error:", err);
+      console.error(err);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    if (activeWebhook === "Razorpay") {
-      generateWebhookCredentials();
-    }
-  }, [activeWebhook]);
+    const fetchStatus = async () => {
+      for (const gateway of gateways) {
+        const key = gateway.name.toLowerCase();
+        try {
+          const res = await fetch(`https://vaultpay-4ez5.onrender.com/webhook/status/${key}`, {
+            method: "GET",
+            credentials: "include",
+          })
+
+          const data = await res.json();
+
+          setConnections(prev => ({
+            ...prev,
+            [key]: data.connected,
+          }));
+
+        } catch(err) {
+          setConnections(prev => ({
+            ...prev,
+            [key]: false
+          }));
+        }
+      }
+    };
+    fetchStatus();
+  }, []);
+
+  const handleCopy = (text, field) => {
+    navigator.clipboard.writeText(text);
+    setCopiedField(field);
+    setTimeout(() => setCopiedField(null), 2000);
+  };
 
   return (
-    <div className="max-w-2xl mx-auto p-8 bg-gray-50 rounded-xl shadow-sm border border-gray-200">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-8">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">
-            Webhook Integration
-          </h1>
-          <p className="text-sm text-gray-500">
-            Manage your payment gateway notifications
-          </p>
-        </div>
-        <Settings className="text-gray-400 hover:rotate-90 transition-transform duration-300 cursor-pointer" />
-      </div>
+    <div className="p-6 bg-gray-50">
+      <div className="max-w-6xl mx-auto">
 
-      {/* Gateway List */}
-      <div className="space-y-4">
-        {gateways.map((gateway) => (
-          <div
-            key={gateway.name}
-            className="flex items-center justify-between p-4 bg-white rounded-lg border border-gray-100 hover:border-blue-300 transition-colors shadow-sm"
-          >
-            <div className="flex items-center gap-4">
+        {/* Header Section */}
+        <header className="flex justify-between items-start mb-12">
+          <div>
+            <p className=" text-xs text-[#737373] font-semibold uppercase tracking-widest mb-1">Webhooks</p>
+            <h1 className="text-2xl font-bold text-gray-900">Event Gateways</h1>
+            <p className="text-gray-500 text-sm">Connect your applications to real-time payment events. Securely delivered, highly reliable.</p>
+          </div>
+        </header>
+
+        {/* Gateway Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {gateways.map((g) => {
+            const key = g.name.toLowerCase();
+            const connected = connections[key];
+
+            return (
               <div
-                className={`w-2 h-10 rounded-full ${gateway.color}`}
-              />
-              <div>
-                <h3 className="font-semibold text-gray-800">
-                  {gateway.name}
-                </h3>
-                <div className="flex items-center gap-1 text-xs text-green-600">
-                  <CheckCircle size={12} />
-                  <span>{gateway.status}</span>
+                key={g.name}
+                className={`p-1 rounded-[2rem] transition-all duration-500 ${activeWebhook === key ? "bg-zinc-100" : "bg-transparent"
+                  }`}
+              >
+                <div
+                  className={`h-full border p-8 rounded-[1.8rem] bg-white transition-all ${activeWebhook === key
+                    ? "border-black shadow-2xl shadow-zinc-200"
+                    : "border-zinc-100 hover:border-zinc-300"
+                    }`}
+                >
+                  <div className="flex justify-between items-start mb-8">
+                    <div className="space-y-1">
+                      <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">
+                        {g.type}
+                      </span>
+                      <h3 className="text-2xl font-bold tracking-tight">{g.name}</h3>
+                    </div>
+                    <div className={`px-3 py-1 rounded-full text-[10px] font-black uppercase ${g.status === 'Connected' ? 'bg-emerald-50 text-emerald-600' : 'bg-zinc-50 text-zinc-400'
+                      }`}>
+                      {g.status}
+                    </div>
+                  </div>
+
+                  {g.status !== "Coming Soon" ? (
+                    <button
+                      disabled={connected}
+                      onClick={() => {
+                        const key = g.name.toLowerCase();
+                        setActiveWebhook(key);
+
+                        if (!connections[key]) {
+                          generateCredentials(key);
+                        }
+                      }}
+                      className={`w-full py-4 rounded-xl text-sm font-bold flex items-center justify-center gap-2 transition-all active:scale-[0.98] cursor-pointer
+                    ${connected
+                          ? "bg-zinc-100 text-zinc-500"
+                          : "bg-zinc-900 text-white hover:bg-black"
+                        }`}
+                    >
+                      {connected ? "Connected" : "Generate"}
+                      < ArrowRight size={16} />
+                    </button>
+                  ) : (
+                    <div className="w-full py-4 rounded-xl border border-dashed border-zinc-200 text-zinc-300 text-sm font-bold text-center">
+                      Locked
+                    </div>
+                  )}
+                </div>
+              </div>
+            )
+          })}
+        </div>
+
+        {activeWebhook === "razorpay" && (
+          <div className="mt-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
+            {/* Label for the Section */}
+            <div className="flex items-center gap-2 mb-4 px-1">
+              <div className="h-1.5 w-1.5 rounded-full bg-black animate-pulse" />
+              <span className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400">Active Configuration</span>
+            </div>
+
+            {/* Main Container: Pure White against the Gray-50 background */}
+            <div className="bg-white border border-zinc-200 rounded-[2rem] shadow-sm overflow-hidden">
+
+              {/* Panel Header */}
+              <div className="border-b border-zinc-100 p-8 flex items-center justify-between bg-zinc-50/30">
+                <div className="flex items-center gap-4">
+                  <h2 className="text-xl font-bold tracking-tight text-zinc-900">Endpoint Settings</h2>
+                </div>
+                <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-emerald-50 rounded-full border border-emerald-100">
+                  <div className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                  <span className="text-[10px] font-bold text-emerald-700 uppercase">System Ready</span>
+                </div>
+              </div>
+
+              <div className="p-8 space-y-10">
+                {/* Field: Payload URL */}
+                <div className="space-y-3">
+                  <div className="flex justify-between items-end">
+                    <label className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest flex items-center gap-2">
+                      <Globe size={14} className="text-zinc-300" /> Payload Destination
+                    </label>
+                    {copiedField === 'url' && (
+                      <span className="text-emerald-600 text-[10px] font-bold bg-emerald-50 px-2 py-0.5 rounded-md">
+                        COPIED
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="relative group flex items-center">
+                    <div className="w-full bg-zinc-50/50 border border-zinc-100 px-5 py-4 rounded-2xl font-mono text-sm text-zinc-600 group-hover:border-zinc-300 group-hover:bg-white transition-all truncate ring-offset-2 focus-within:ring-2 ring-black/5">
+                      {loading ? (
+                        <span className="text-zinc-300 italic animate-pulse">Establishing secure link...</span>
+                      ) : webhookURL}
+                    </div>
+                    <button
+                      onClick={() => handleCopy(webhookURL, 'url')}
+                      className="absolute right-3 p-2.5 text-zinc-400 hover:text-black hover:bg-zinc-100 rounded-xl transition-all cursor-pointer"
+                    >
+                      <Copy size={18} />
+                    </button>
+                  </div>
+                </div>
+
+                {/* Field: Secret */}
+                <div className="space-y-3">
+                  <div className="flex justify-between items-end">
+                    <label className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest flex items-center gap-2">
+                      <Lock size={14} className="text-zinc-300" /> Signing Secret
+                    </label>
+                    {copiedField === 'secret' && (
+                      <span className="text-emerald-600 text-[10px] font-bold bg-emerald-50 px-2 py-0.5 rounded-md">
+                        COPIED
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="relative group flex items-center">
+                    <div className="w-full bg-zinc-50/50 border border-zinc-100 px-5 py-4 rounded-2xl font-mono text-sm text-zinc-600 group-hover:border-zinc-300 group-hover:bg-white transition-all truncate">
+                      {loading ? (
+                        <span className="text-zinc-300 italic animate-pulse">Generating keys...</span>
+                      ) : (revealSecret ? webhookSecret : "•".repeat(32))}
+                    </div>
+                    <div className="absolute right-3 flex gap-1">
+                      <button
+                        onClick={() => setRevealSecret(!revealSecret)}
+                        className="p-2.5 text-zinc-400 hover:text-black hover:bg-zinc-100 rounded-xl transition-all cursor-pointer"
+                      >
+                        {revealSecret ? <EyeOff size={18} /> : <Eye size={18} />}
+                      </button>
+                      <button
+                        onClick={() => handleCopy(webhookSecret, 'secret')}
+                        className="p-2.5 text-zinc-400 hover:text-black hover:bg-zinc-100 rounded-xl transition-all cursor-pointer"
+                      >
+                        <Copy size={18} />
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
-
-            <button
-              onClick={() => setActiveWebhook(gateway.name)}
-              className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-blue-600 hover:bg-blue-50 rounded-md transition-colors"
-            >
-              Configure
-              <ArrowRight size={16} />
-            </button>
           </div>
-        ))}
-      </div>
+        )}
 
-      {/* Razorpay Configuration */}
-      {activeWebhook === "Razorpay" && (
-        <div className="mt-6 bg-white border rounded-xl p-6 space-y-5">
-          <h2 className="text-lg font-semibold text-gray-800">
-            Razorpay Webhook Details
-          </h2>
-
-          <div>
-            <p className="text-xs text-gray-500 mb-1">Payload URL</p>
-            <div className="p-3 bg-gray-50 rounded-md text-sm font-mono break-all">
-              {loading ? "Generating..." : webhookURL}
-            </div>
-          </div>
-
-          <div>
-            <p className="text-xs text-gray-500 mb-1">Signing Secret</p>
-            <div className="p-3 bg-gray-50 rounded-md text-sm font-mono break-all">
-              {loading ? "Generating..." : webhookSecret}
-            </div>
+        {/* Footer Tip */}
+        <div className="mt-8 p-4 bg-blue-50 border border-blue-100 rounded-xl flex gap-3 text-blue-800">
+          <Info size={20} className="shrink-0" />
+          <div className="text-sm">
+            <p className="font-bold">Next Steps:</p>
+            <ol className="list-decimal ml-4 mt-1 space-y-1">
+              <li>Copy the Payload URL above.</li>
+              <li>Go to your Provider Dashboard.</li>
+              <li>
+                Add a new Webhook and select events:
+                <b> payment.captured</b> and <b> order.paid</b>.
+              </li>
+              <li>Paste the Signing Secret.</li>
+            </ol>
           </div>
         </div>
-      )}
 
-      {/* Footer Tip */}
-      <div className="mt-8 p-4 bg-blue-50 border border-blue-100 rounded-xl flex gap-3 text-blue-800">
-        <Info size={20} className="shrink-0" />
-        <div className="text-sm">
-          <p className="font-bold">Next Steps:</p>
-          <ol className="list-decimal ml-4 mt-1 space-y-1">
-            <li>Copy the Payload URL above.</li>
-            <li>Go to your Provider Dashboard.</li>
-            <li>
-              Add a new Webhook and select events:
-              <b> payment.captured</b> and <b> order.paid</b>.
-            </li>
-            <li>Paste the Signing Secret into VaultPay if required.</li>
-          </ol>
-        </div>
       </div>
     </div>
   );

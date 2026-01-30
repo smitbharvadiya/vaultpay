@@ -22,13 +22,14 @@ function App() {
   const [openSignUp, setOpenSignUp] = useState(false);
   const [openLogin, setOpenLogin] = useState(false);
   const [isLogin, setIsLogin] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const isModalOpen = openSignUp || openLogin;
 
   useEffect(() => {
 
     const checkAuth = async () => {
+      setLoading(true);
       try {
         const res = await fetch("https://vaultpay-4ez5.onrender.com/checkAuth", {
           method: "GET",
@@ -49,10 +50,6 @@ function App() {
     checkAuth();
 
   }, []);
-
-  if (loading) {
-    return <div className="flex h-screen items-center justify-center">Loading...</div>;
-  }
 
   return (
     <>

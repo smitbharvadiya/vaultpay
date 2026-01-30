@@ -130,36 +130,14 @@ router.post("/stripe/connect", verifyToken, async (req, res) => {
 
 });
 
-router.get("/razorpay/status", verifyToken, async (req, res) => {
+router.get("/:gateway/status", verifyToken, async (req, res) => {
+
+    const {provider} = req.params;
 
     try {
         const gateway = await ConnectedGateway.findOne({
             userId: req.userId,
-            provider: "razorpay",
-            env: "test",
-            status: "CONNECTED",
-            is_active: true
-        });
-
-        return res.status(200).json({
-            connected: Boolean(gateway),
-        });
-
-    } catch (err) {
-        console.error("Gateway status error:", err);
-        return res.status(500).json({
-            connected: false,
-            error: "Failed to check gateway status",
-        });
-    }
-});
-
-router.get("/stripe/status", verifyToken, async (req, res) => {
-
-    try {
-        const gateway = await ConnectedGateway.findOne({
-            userId: req.userId,
-            provider: "stripe",
+            provider: provider,
             env: "test",
             status: "CONNECTED",
             is_active: true
