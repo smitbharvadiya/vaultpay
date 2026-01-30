@@ -51,6 +51,14 @@ function App() {
 
   }, []);
 
+  if (loading) {
+    return (
+      <div className="h-screen flex items-center justify-center">
+        <p>Checking authentication...</p>
+      </div>
+    );
+  }
+
   return (
     <>
       <Router>

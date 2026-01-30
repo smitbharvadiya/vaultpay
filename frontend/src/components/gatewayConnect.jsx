@@ -68,7 +68,7 @@ const GatewayConnection = () => {
         const fetchStatus = async () => {
             for (const gateway of gateways) {
                 try {
-                    const res = await fetch(`https://vaultpay-4ez5.onrender.com/gateways/${gateway.name}/status`, {
+                    const res = await fetch(`https://vaultpay-4ez5.onrender.com/gateways/status/${gateway.name}`, {
                         method: "GET",
                         credentials: "include",
                     })

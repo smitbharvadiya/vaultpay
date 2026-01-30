@@ -26,8 +26,9 @@ const Webhook = () => {
     stripe: false,
   });
 
+
   const gateways = [
-    { name: "Razorpay", status: "Connected", type: "Domestic" },
+    { name: "Razorpay", status: connections["razorpay"] ? "Active" : "Disabled", type: "Domestic" },
     { name: "Stripe", status: "Coming Soon", type: "International" },
   ];
 
@@ -133,7 +134,7 @@ const Webhook = () => {
                       </span>
                       <h3 className="text-2xl font-bold tracking-tight">{g.name}</h3>
                     </div>
-                    <div className={`px-3 py-1 rounded-full text-[10px] font-black uppercase ${g.status === 'Connected' ? 'bg-emerald-50 text-emerald-600' : 'bg-zinc-50 text-zinc-400'
+                    <div className={`px-3 py-1 rounded-full text-[10px] font-black uppercase ${g.status === 'Active' ? 'bg-emerald-50 text-emerald-600' : 'bg-zinc-50 text-zinc-400'
                       }`}>
                       {g.status}
                     </div>

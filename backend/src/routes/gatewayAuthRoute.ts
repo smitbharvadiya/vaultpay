@@ -59,6 +59,8 @@ router.post("/razorpay/connect", verifyToken, async (req, res) => {
             env: "test",
             type: "api_key",
             credentials: encryptedCredentials,
+            status: "CONNECTED",
+            is_active: true
         });
 
         return res.status(200).json({
@@ -130,21 +132,21 @@ router.post("/stripe/connect", verifyToken, async (req, res) => {
 
 });
 
-router.get("/:gateway/status", verifyToken, async (req, res) => {
+router.get("/status/:gateway", verifyToken, async (req, res) => {
 
-    const {provider} = req.params;
+    const { gateway } = req.params;
 
     try {
-        const gateway = await ConnectedGateway.findOne({
+        const isGatewayConnected = await ConnectedGateway.findOne({
             userId: req.userId,
-            provider: provider,
+            provider: gateway,
             env: "test",
             status: "CONNECTED",
             is_active: true
         });
 
         return res.status(200).json({
-            connected: Boolean(gateway),
+            connected: Boolean(isGatewayConnected),
         });
 
     } catch (err) {
