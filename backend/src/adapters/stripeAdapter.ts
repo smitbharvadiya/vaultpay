@@ -53,7 +53,6 @@ export class StripeAdapter implements ProviderAdaptor {
 
         console.log(intent.client_secret);
 
-
         return {
             orderId: intent.id,
             clientSecret: intent.client_secret!,

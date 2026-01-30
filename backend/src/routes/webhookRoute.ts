@@ -12,7 +12,7 @@ router.post("/secret/generate", verifyToken, async (req, res) => {
 
   try {
     const userId = req.userId;
-    
+
     const { provider } = req.body;
 
     if (!provider) {
@@ -48,27 +48,59 @@ router.post("/secret/generate", verifyToken, async (req, res) => {
 
 });
 
+router.post("/stripe/save-secret", async (req, res) => {
+  try {
+    const userId = req.userId;
+    const { secret } = req.body;
+
+    if (!secret) return res.status(400).json({ message: "Stripe secret is required" });
+
+    const provider = "stripe";
+    const webhookId = "wh_" + nanoid(21);
+
+    const webhook = await webhookConfig.findOneAndUpdate(
+      { userId, provider },
+      {
+        webhookId,
+        secret,
+        provider,
+        userId,
+        status: "active",
+      },
+      { upsert: true, new: true }
+    );
+
+    res.status(200).json({
+      webhookUrl: `https://vaultpay-4ez5.onrender.com/webhook/${provider}/${webhookId}`,
+      secret: webhook.secret,
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "Failed to save Stripe secret" });
+  }
+});
+
 router.get("/status/:gateway", verifyToken, async (req, res) => {
 
-  const {gateway} = req.params;
+  const { gateway } = req.params;
 
-    try {
-        const gatewayWebhook = await webhookConfig.findOne({
-            userId: req.userId,
-            provider: gateway,
-            status: "active",
-        });
+  try {
+    const gatewayWebhook = await webhookConfig.findOne({
+      userId: req.userId,
+      provider: gateway,
+      status: "active",
+    });
 
-        return res.status(200).json({
-            connected: Boolean(gatewayWebhook),
-        });
+    return res.status(200).json({
+      connected: Boolean(gatewayWebhook),
+    });
 
-    } catch (err) {
-        return res.status(500).json({
-            connected: false,
-            error: "Failed to check webhook status",
-        });
-    }
+  } catch (err) {
+    return res.status(500).json({
+      connected: false,
+      error: "Failed to check webhook status",
+    });
+  }
 });
 
 router.post("/razorpay/:webhookId", express.raw({ type: "*/*" }), async (req: any, res: any) => {
@@ -108,6 +140,7 @@ router.post("/razorpay/:webhookId", express.raw({ type: "*/*" }), async (req: an
   }
 
 });
+
 
 
 

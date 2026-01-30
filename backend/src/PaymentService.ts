@@ -22,7 +22,7 @@ export class PaymentService {
 
         const paymentResult = await adaptor.createPayment(params);
 
-        const saved = await paymentModel.create({
+        const savedPayment = await paymentModel.create({
             userId: params.userId,
             apiKeyId: params.apiKeyId,
             env: params.env,
@@ -33,7 +33,11 @@ export class PaymentService {
             status: paymentResult.status,
         });
 
-        return saved;
+        return {
+            payment: savedPayment,
+            clientSecret: paymentResult.clientSecret ?? null,
+        };
+
     }
 
     static async getPaymentStatus(orderId: string) {
@@ -59,7 +63,7 @@ export class PaymentService {
     }) {
         const payment = await paymentModel.findOne({ paymentId: params.paymentId });
 
-        if (!payment){
+        if (!payment) {
             throw new Error("Payment not found");
         }
 
@@ -67,7 +71,7 @@ export class PaymentService {
 
         const adaptorFactory = providerRegistry[provider];
 
-        if (!adaptorFactory){
+        if (!adaptorFactory) {
             throw new Error("Provider not supported");
         }
 

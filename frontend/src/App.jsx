@@ -5,59 +5,24 @@ import SignUp from './components/signup';
 import Login from './components/login';
 import './App.css'
 import { useState } from 'react';
-import { useEffect } from 'react';
 import CreateKey from './components/createKeyBox';
 import ApiKey from './components/apiKeys';
 import DashboardLayout from './pages/DashboardLayout';
-import ProtectedRoutes from '../utils/ProtectedRoutes';
-import Analytics from './components/analytics';
+// import ProtectedRoutes from '../utils/ProtectedRoutes';
 import Docs from './components/docs';
 import GatewayConnection from './components/gatewayConnect';
 import Transactions from './components/transactions';
 import Dashboard from './components/dashboard';
 import Webhooks from './components/webhooks';
+import ProtectedRoutes from './components/ProtectedRoutes';
 
 function App() {
 
   const [openSignUp, setOpenSignUp] = useState(false);
   const [openLogin, setOpenLogin] = useState(false);
   const [isLogin, setIsLogin] = useState(false);
-  const [loading, setLoading] = useState(false);
 
   const isModalOpen = openSignUp || openLogin;
-
-  useEffect(() => {
-
-    const checkAuth = async () => {
-      setLoading(true);
-      try {
-        const res = await fetch("https://vaultpay-4ez5.onrender.com/checkAuth", {
-          method: "GET",
-          credentials: 'include',
-        })
-
-        const data = await res.json();
-
-        setIsLogin(data.isAuthenticated);
-
-      } catch (err) {
-        console.error("Auth check failed:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    checkAuth();
-
-  }, []);
-
-  if (loading) {
-    return (
-      <div className="h-screen flex items-center justify-center">
-        <p>Checking authentication...</p>
-      </div>
-    );
-  }
 
   return (
     <>
@@ -94,19 +59,17 @@ function App() {
             } />
 
             {/* DASHBOARD */}
-            <Route element={
-              <ProtectedRoutes isLogin={isLogin}>
-                <DashboardLayout setIsLogin={setIsLogin} />
-              </ProtectedRoutes>
-            }>
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/apikey/create" element={<CreateKey />} />
-              <Route path="/apikey" element={<ApiKey />} />
-              <Route path="/analytics" element={<Analytics />} />
-              <Route path="/gateways" element={<GatewayConnection />} />
-              <Route path="/transactions" element={<Transactions />} />
-              <Route path="/webhooks" element={<Webhooks />} />
+            <Route element={<ProtectedRoutes setIsLogin={setIsLogin} />}>
+              <Route element={<DashboardLayout setIsLogin={setIsLogin} />}>
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/apikey/create" element={<CreateKey />} />
+                <Route path="/apikey" element={<ApiKey />} />
+                <Route path="/gateways" element={<GatewayConnection />} />
+                <Route path="/transactions" element={<Transactions />} />
+                <Route path="/webhooks" element={<Webhooks />} />
+              </Route>
             </Route>
+
           </Routes>
         </div>
       </Router>

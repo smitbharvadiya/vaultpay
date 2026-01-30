@@ -12,6 +12,7 @@ export interface ProviderAdaptor {
         currency: string;
         provider: string;
         status: "PENDING" | "CREATED" | "FAILED" | "SUCCESS";
+        clientSecret?: string;
     }>  
 
     refundPayment(params: {

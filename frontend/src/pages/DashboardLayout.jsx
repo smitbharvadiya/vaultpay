@@ -4,15 +4,18 @@ import DashboardHeader from "../components/dashboardHeader";
 
 const DashboardLayout = ({ setIsLogin }) => {
   return (
-    <div className="flex h-screen overflow-hidden pt-16">
-      {/* Sidebar */}
-      <SideBar setIsLogin={setIsLogin} />
-
+    <div className="h-screen overflow-hidden">
+      {/* Fixed Header */}
       <DashboardHeader />
 
-      {/* Page Content */}
-      <div className="flex-1 overflow-y-auto bg-gray-50">
-        <Outlet />
+      <div className="flex pt-16 h-full">
+        {/* Sidebar */}
+        <SideBar setIsLogin={setIsLogin} />
+
+        {/* Page Content */}
+        <div className="flex-1 overflow-y-auto bg-gray-50">
+          <Outlet />
+        </div>
       </div>
     </div>
   );

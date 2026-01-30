@@ -19,7 +19,7 @@ router.post("/create", async (req, res) => {
 
         res.locals.gateway = provider;
 
-        const payment = await PaymentService.createPayment(provider, {
+        const { payment, clientSecret } = await PaymentService.createPayment(provider, {
             amount,
             currency,
             metadata,
@@ -29,7 +29,8 @@ router.post("/create", async (req, res) => {
 
         return res.json({
             success: true,
-            data: payment
+            data: payment,
+            clientSecret,
         });
 
     } catch (error: any) {

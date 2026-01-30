@@ -39,7 +39,6 @@ const SideBar = ({ setIsLogin }) => {
     const menuItems = [
         { name: "Dashboard", icon: <LuLayoutDashboard />, path: "/dashboard" },
         { name: "API Keys", icon: <FiKey />, path: "/apikey" },
-        { name: "Analytics", icon: <FaChartBar />, path: "/analytics" },
         { name: "Gateways", icon: <RiSecurePaymentFill />, path: "/gateways" },
         { name: "Transactions", icon: <MdOutlinePayment />, path: "/Transactions" },
         { name: "Webhooks", icon: <LuWebhook />, path: "/webhooks" },
