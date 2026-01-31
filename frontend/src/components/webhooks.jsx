@@ -44,7 +44,9 @@ const Webhook = () => {
       if (!res.ok) throw new Error(data.message || "webhook credentials failed to generate");
 
       setWebhookURL(data.webhookUrl);
-      setWebhookSecret(data.secret);
+      if (data.secret) {
+        setWebhookSecret(data.secret);
+      }
 
       setConnections(prev => ({
         ...prev,
@@ -57,6 +59,45 @@ const Webhook = () => {
       setLoading(false);
     }
   };
+
+  const saveStripeSecret = async () => {
+    try {
+      const res = await fetch(
+        "https://vaultpay-4ez5.onrender.com/webhook/stripe/save-secret",
+        {
+          method: "POST",
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ secret: webhookSecret }),
+        }
+      );
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        alert(data.message || "Failed to save Stripe secret");
+        return;
+      }
+
+      const statusRes = await fetch(
+        "https://vaultpay-4ez5.onrender.com/webhook/status/stripe",
+        { credentials: "include" }
+      );
+
+      const statusData = await statusRes.json();
+
+      setConnections(prev => ({
+        ...prev,
+        stripe: statusData.connected,
+      }));
+
+    } catch (err) {
+      console.error(err);
+      alert("Something went wrong while saving Stripe secret");
+    }
+  };
+
+
 
   useEffect(() => {
     const fetchStatus = async () => {
@@ -114,8 +155,15 @@ const Webhook = () => {
             return (
               <div
                 key={g.name}
-                className="bg-white border border-zinc-200 rounded-[24px] p-6 flex flex-col transition hover:border-zinc-300"
+                className={`p-1 rounded-[2rem] transition-all duration-500 ${activeWebhook === key ? "bg-zinc-100" : "bg-transparent"
+                  }`}
               >
+<<<<<<< Updated upstream
+                <div
+                  className={`h-full border p-8 rounded-[1.8rem] bg-white transition-all ${activeWebhook === key
+                    ? "border-black shadow-2xl shadow-zinc-200"
+                    : "border-zinc-100 hover:border-zinc-300"
+=======
                 {/* Header */}
                 <div className="flex justify-between items-start mb-6">
                   <div>
@@ -131,6 +179,37 @@ const Webhook = () => {
                     {connected ? "Active" : "Disabled"}
                   </span>
                 </div>
+
+                {/* Description */}
+                <p className="text-sm text-zinc-500 mb-6">
+                  Receive real-time payment events securely.
+                </p>
+
+                {/* Action */}
+                <button
+                  disabled={connected}
+                  onClick={() => {
+                    setActiveWebhook(key);
+                    if (!connected) generateCredentials(key);
+                  }}
+                  className={`mt-auto w-full py-3 rounded-xl font-bold transition cursor-pointer ${connected
+                    ? "bg-zinc-100 text-zinc-500"
+                    : "bg-zinc-900 text-white hover:bg-black"
+>>>>>>> Stashed changes
+                    }`}
+                >
+                  <div className="flex justify-between items-start mb-8">
+                    <div className="space-y-1">
+                      <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">
+                        {g.type}
+                      </span>
+                      <h3 className="text-2xl font-bold tracking-tight">{g.name}</h3>
+                    </div>
+                    <div className={`px-3 py-1 rounded-full text-[10px] font-black uppercase ${g.status === 'Connected' ? 'bg-emerald-50 text-emerald-600' : 'bg-zinc-50 text-zinc-400'
+                      }`}>
+                      {g.status}
+                    </div>
+                  </div>
 
                 {/* Description */}
                 <p className="text-sm text-zinc-500 mb-6">
@@ -247,6 +326,8 @@ const Webhook = () => {
           </div>
         )}
 
+<<<<<<< Updated upstream
+=======
         {activeWebhook === "stripe" && (
           <div className="mt-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
             <div className="flex items-center gap-2 mb-4 px-1">
@@ -268,7 +349,7 @@ const Webhook = () => {
                     <Globe size={14} className="text-zinc-300" /> Payload Destination
                   </label>
                   <div className="w-full bg-zinc-50/50 border border-zinc-100 px-5 py-4 rounded-2xl font-mono text-sm text-zinc-600 truncate">
-                    {webhookURL || "https://vaultpay-4ez5.onrender.com/webhook/stripe"}
+                    {webhookURL}
                   </div>
                 </div>
 
@@ -293,15 +374,7 @@ const Webhook = () => {
                     </button>
                   </div>
                   <button
-                    onClick={async () => {
-                      await fetch("https://vaultpay-4ez5.onrender.com/webhook/stripe/save-secret", {
-                        method: "POST",
-                        credentials: "include",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ secret: webhookSecret }),
-                      });
-                      setConnections((prev) => ({ ...prev, stripe: true }));
-                    }}
+                    onClick={saveStripeSecret}
                     className="mt-2 py-3 w-full bg-zinc-900 text-white rounded-xl font-bold hover:bg-black"
                   >
                     Save Secret
@@ -313,6 +386,7 @@ const Webhook = () => {
         )}
 
 
+>>>>>>> Stashed changes
         {/* Footer Tip */}
         <div className="mt-8 p-4 bg-blue-50 border border-blue-100 rounded-xl flex gap-3 text-blue-800">
           <Info size={20} className="shrink-0" />

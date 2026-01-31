@@ -4,14 +4,15 @@ import { WebhookAdapter } from "./ProviderAdapter";
 
 export class StripeWebhookAdapter implements WebhookAdapter {
 
-
     verifyWebhook(req: any, secret: any) {
+        const webhookBody = req.body;
+        const webhookSignature  = req.headers["stripe-signature"] as string;
+        const webhookSecret = secret as string;
 
-        const signature  = req.headers["stripe-signature"] as string;
 
         let event: Stripe.Event;
         try {
-            event = Stripe.webhooks.constructEvent(req.body, signature, secret);
+            event = Stripe.webhooks.constructEvent(webhookBody, webhookSignature, webhookSecret);
         } catch (err) {
             console.log("Stripe signature validation failed!");
             throw new Error(`Invalid Stripe webhook signature: ${(err as Error).message}`);
