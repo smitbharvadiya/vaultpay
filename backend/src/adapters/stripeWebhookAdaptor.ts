@@ -31,11 +31,6 @@ export class StripeWebhookAdapter implements WebhookAdapter {
 
         const paymentIntent = event.data.object as Stripe.PaymentIntent;
 
-        if (!paymentIntent.metadata?.order_id) {
-            console.warn("order_id missing in metadata");
-            return;
-        }
-
         let status: "ATTEMPTED" | "CREATED" | "CAPTURED" | "FAILED" = "ATTEMPTED";
 
         switch (event.type) {
@@ -50,7 +45,7 @@ export class StripeWebhookAdapter implements WebhookAdapter {
         }
 
         await paymentModel.findOneAndUpdate(
-            { orderId: paymentIntent.metadata.order_id },
+            { orderId: paymentIntent.id },
             {
                 paymentId: paymentIntent.id,
                 status,
