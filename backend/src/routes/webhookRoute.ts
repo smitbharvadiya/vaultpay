@@ -171,7 +171,7 @@ router.post("/stripe/:webhookId", async (req: any, res: any) => {
       throw err;
     }
 
-    // await adapter.normalizeWebhook(event);
+    await adapter.normalizeWebhook(event);
 
     return res.status(200).json({ success: "Signature verified succesfully" });
   } catch (err) {
