@@ -9,7 +9,6 @@ export class StripeWebhookAdapter implements WebhookAdapter {
         const webhookSignature  = req.headers["stripe-signature"] as string;
         const webhookSecret = secret as string;
 
-
         let event: Stripe.Event;
         try {
             event = Stripe.webhooks.constructEvent(webhookBody, webhookSignature, webhookSecret);

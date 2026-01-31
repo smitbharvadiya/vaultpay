@@ -50,7 +50,7 @@ const Webhook = () => {
 
       setConnections(prev => ({
         ...prev,
-        [provider]: true,
+        [provider]: provider === "razorpay",
       }));
 
     } catch (err) {
@@ -153,11 +153,9 @@ const Webhook = () => {
             const connected = connections[key];
 
             return (
-              <div
-                key={g.name}
-                className={`p-1 rounded-[2rem] transition-all duration-500 ${activeWebhook === key ? "bg-zinc-100" : "bg-transparent"
-                  }`}
-              >
+              <div 
+                key={g.name} 
+                className="bg-white border border-zinc-200 rounded-[24px] p-6 flex flex-col transition hover:border-zinc-300" >
                 {/* Header */}
                 <div className="flex justify-between items-start mb-6">
                   <div>
@@ -184,39 +182,10 @@ const Webhook = () => {
                   disabled={connected}
                   onClick={() => {
                     setActiveWebhook(key);
+                    setWebhookSecret("");
                     if (!connected) generateCredentials(key);
                   }}
                   className={`mt-auto w-full py-3 rounded-xl font-bold transition cursor-pointer ${connected
-                    ? "bg-zinc-100 text-zinc-500"
-                    : "bg-zinc-900 text-white hover:bg-black"
-                    }`}
-                >
-                  <div className="flex justify-between items-start mb-8">
-                    <div className="space-y-1">
-                      <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">
-                        {g.type}
-                      </span>
-                      <h3 className="text-2xl font-bold tracking-tight">{g.name}</h3>
-                    </div>
-                    <div className={`px-3 py-1 rounded-full text-[10px] font-black uppercase ${g.status === 'Connected' ? 'bg-emerald-50 text-emerald-600' : 'bg-zinc-50 text-zinc-400'
-                      }`}>
-                      {g.status}
-                    </div>
-                  </div>
-
-                {/* Description */}
-                <p className="text-sm text-zinc-500 mb-6">
-                  Receive real-time payment events securely.
-                </p>
-
-                {/* Action */}
-                <button
-                  disabled={connected}
-                  onClick={() => {
-                    setActiveWebhook(key);
-                    if (!connected) generateCredentials(key);
-                  }}
-                  className={`mt-auto w-full py-3 rounded-xl font-bold transition ${connected
                     ? "bg-zinc-100 text-zinc-500"
                     : "bg-zinc-900 text-white hover:bg-black"
                     }`}
@@ -366,7 +335,7 @@ const Webhook = () => {
                   </div>
                   <button
                     onClick={saveStripeSecret}
-                    className="mt-2 py-3 w-full bg-zinc-900 text-white rounded-xl font-bold hover:bg-black"
+                    className="mt-2 py-3 w-full bg-zinc-900 text-white rounded-xl font-bold hover:bg-black cursor-pointer"
                   >
                     Save Secret
                   </button>

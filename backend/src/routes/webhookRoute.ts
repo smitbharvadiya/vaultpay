@@ -143,7 +143,7 @@ router.post("/razorpay/:webhookId", express.raw({ type: "*/*" }), async (req: an
 
 });
 
-router.post("/stripe/:webhookId", express.raw({ type: "*/*" }), async (req: any, res: any) => {
+router.post("/stripe/:webhookId", async (req: any, res: any) => {
 
   try {
     const { webhookId } = req.params;
