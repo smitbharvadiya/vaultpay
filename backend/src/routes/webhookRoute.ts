@@ -24,22 +24,15 @@ router.post("/secret/generate", verifyToken, async (req, res) => {
 
     let secret = null;
 
-<<<<<<< Updated upstream
-=======
     if (provider === "razorpay") {
       secret = crypto.randomBytes(32).toString("hex");
     }
 
->>>>>>> Stashed changes
     const webhook = await webhookConfig.findOneAndUpdate(
       { userId, provider },
       {
         webhookId,
-<<<<<<< Updated upstream
-        secret: webhookSecret,
-=======
         secret,
->>>>>>> Stashed changes
         provider,
         userId,
         status: "active",
@@ -49,11 +42,7 @@ router.post("/secret/generate", verifyToken, async (req, res) => {
 
     res.status(200).json({
       webhookUrl: `https://vaultpay-4ez5.onrender.com/webhook/${provider}/${webhookId}`,
-<<<<<<< Updated upstream
-      secret: webhook.secret,
-=======
       ...(secret && { secret })
->>>>>>> Stashed changes
     });
 
 
@@ -64,8 +53,6 @@ router.post("/secret/generate", verifyToken, async (req, res) => {
 
 });
 
-<<<<<<< Updated upstream
-=======
 router.post("/stripe/save-secret", verifyToken, async (req, res) => {
   try {
     const userId = req.userId;
@@ -95,7 +82,6 @@ router.post("/stripe/save-secret", verifyToken, async (req, res) => {
   }
 });
 
->>>>>>> Stashed changes
 router.get("/status/:gateway", verifyToken, async (req, res) => {
 
   const {gateway} = req.params;
@@ -157,7 +143,7 @@ router.post("/razorpay/:webhookId", express.raw({ type: "*/*" }), async (req: an
 
 });
 
-router.post("/stripe/:webhookId", express.raw({ type: "*/*" }), async (req: any, res: any) => {
+router.post("/stripe/:webhookId", async (req: any, res: any) => {
 
   try {
     const { webhookId } = req.params;

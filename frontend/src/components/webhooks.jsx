@@ -53,7 +53,7 @@ const Webhook = () => {
 
       setConnections(prev => ({
         ...prev,
-        [provider]: true,
+        [provider]: provider === "razorpay",
       }));
 
     } catch (err) {
@@ -156,17 +156,9 @@ const Webhook = () => {
             const connected = connections[key];
 
             return (
-              <div
-                key={g.name}
-                className={`p-1 rounded-[2rem] transition-all duration-500 ${activeWebhook === key ? "bg-zinc-100" : "bg-transparent"
-                  }`}
-              >
-<<<<<<< Updated upstream
-                <div
-                  className={`h-full border p-8 rounded-[1.8rem] bg-white transition-all ${activeWebhook === key
-                    ? "border-black shadow-2xl shadow-zinc-200"
-                    : "border-zinc-100 hover:border-zinc-300"
-=======
+              <div 
+                key={g.name} 
+                className="bg-white border border-zinc-200 rounded-[24px] p-6 flex flex-col transition hover:border-zinc-300" >
                 {/* Header */}
                 <div className="flex justify-between items-start mb-6">
                   <div>
@@ -193,6 +185,7 @@ const Webhook = () => {
                   disabled={connected}
                   onClick={() => {
                     setActiveWebhook(key);
+                    setWebhookSecret("");
                     if (!connected) generateCredentials(key);
                   }}
                   className={`mt-auto w-full py-3 rounded-xl font-bold transition cursor-pointer ${connected
@@ -201,45 +194,8 @@ const Webhook = () => {
 >>>>>>> Stashed changes
                     }`}
                 >
-                  <div className="flex justify-between items-start mb-8">
-                    <div className="space-y-1">
-                      <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">
-                        {g.type}
-                      </span>
-                      <h3 className="text-2xl font-bold tracking-tight">{g.name}</h3>
-                    </div>
-                    <div className={`px-3 py-1 rounded-full text-[10px] font-black uppercase ${g.status === 'Connected' ? 'bg-emerald-50 text-emerald-600' : 'bg-zinc-50 text-zinc-400'
-                      }`}>
-                      {g.status}
-                    </div>
-                  </div>
-
-                  {g.status !== "Coming Soon" ? (
-                    <button
-                      disabled={connected}
-                      onClick={() => {
-                        const key = g.name.toLowerCase();
-                        setActiveWebhook(key);
-
-                        if (!connections[key]) {
-                          generateCredentials(key);
-                        }
-                      }}
-                      className={`w-full py-4 rounded-xl text-sm font-bold flex items-center justify-center gap-2 transition-all active:scale-[0.98] cursor-pointer
-                    ${connected
-                          ? "bg-zinc-100 text-zinc-500"
-                          : "bg-zinc-900 text-white hover:bg-black"
-                        }`}
-                    >
-                      {connected ? "Connected" : "Generate"}
-                      < ArrowRight size={16} />
-                    </button>
-                  ) : (
-                    <div className="w-full py-4 rounded-xl border border-dashed border-zinc-200 text-zinc-300 text-sm font-bold text-center">
-                      Locked
-                    </div>
-                  )}
-                </div>
+                  {connected ? "Connected" : "Generate Webhook"}
+                </button>
               </div>
             )
           })}
@@ -385,7 +341,7 @@ const Webhook = () => {
                   </div>
                   <button
                     onClick={saveStripeSecret}
-                    className="mt-2 py-3 w-full bg-zinc-900 text-white rounded-xl font-bold hover:bg-black"
+                    className="mt-2 py-3 w-full bg-zinc-900 text-white rounded-xl font-bold hover:bg-black cursor-pointer"
                   >
                     Save Secret
                   </button>

@@ -15,7 +15,6 @@ import analyticsRoute from './routes/analyticsRoute';
 import gatewayAuthRoute from './routes/gatewayAuthRoute';
 import paymentModel from './models/paymentModel';
 import verifyToken from './middleware/verifyToken';
-import apiKey from './models/apiKey';
 
 const app = express();
 
@@ -28,6 +27,9 @@ app.use(cors({
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
 }));
+
+app.use("/webhook/stripe", express.raw({ type: "*/*" }));
+
 
 app.use(express.json());
 app.use(cookieParser());
