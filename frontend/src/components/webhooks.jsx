@@ -158,12 +158,6 @@ const Webhook = () => {
                 className={`p-1 rounded-[2rem] transition-all duration-500 ${activeWebhook === key ? "bg-zinc-100" : "bg-transparent"
                   }`}
               >
-<<<<<<< Updated upstream
-                <div
-                  className={`h-full border p-8 rounded-[1.8rem] bg-white transition-all ${activeWebhook === key
-                    ? "border-black shadow-2xl shadow-zinc-200"
-                    : "border-zinc-100 hover:border-zinc-300"
-=======
                 {/* Header */}
                 <div className="flex justify-between items-start mb-6">
                   <div>
@@ -195,7 +189,6 @@ const Webhook = () => {
                   className={`mt-auto w-full py-3 rounded-xl font-bold transition cursor-pointer ${connected
                     ? "bg-zinc-100 text-zinc-500"
                     : "bg-zinc-900 text-white hover:bg-black"
->>>>>>> Stashed changes
                     }`}
                 >
                   <div className="flex justify-between items-start mb-8">
@@ -326,8 +319,6 @@ const Webhook = () => {
           </div>
         )}
 
-<<<<<<< Updated upstream
-=======
         {activeWebhook === "stripe" && (
           <div className="mt-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
             <div className="flex items-center gap-2 mb-4 px-1">
@@ -386,7 +377,6 @@ const Webhook = () => {
         )}
 
 
->>>>>>> Stashed changes
         {/* Footer Tip */}
         <div className="mt-8 p-4 bg-blue-50 border border-blue-100 rounded-xl flex gap-3 text-blue-800">
           <Info size={20} className="shrink-0" />
