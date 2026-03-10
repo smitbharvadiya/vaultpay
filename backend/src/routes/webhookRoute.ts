@@ -13,7 +13,7 @@ router.post("/secret/generate", verifyToken, async (req, res) => {
 
   try {
     const userId = req.userId;
-    
+
     const { provider } = req.body;
 
     if (!provider) {
@@ -84,25 +84,25 @@ router.post("/stripe/save-secret", verifyToken, async (req, res) => {
 
 router.get("/status/:gateway", verifyToken, async (req, res) => {
 
-  const {gateway} = req.params;
+  const { gateway } = req.params;
 
-    try {
-        const gatewayWebhook = await webhookConfig.findOne({
-            userId: req.userId,
-            provider: gateway,
-            status: "active",
-        });
+  try {
+    const gatewayWebhook = await webhookConfig.findOne({
+      userId: req.userId,
+      provider: gateway,
+      status: "active",
+    });
 
-        return res.status(200).json({
-            connected: Boolean(gatewayWebhook),
-        });
+    return res.status(200).json({
+      connected: Boolean(gatewayWebhook),
+    });
 
-    } catch (err) {
-        return res.status(500).json({
-            connected: false,
-            error: "Failed to check webhook status",
-        });
-    }
+  } catch (err) {
+    return res.status(500).json({
+      connected: false,
+      error: "Failed to check webhook status",
+    });
+  }
 });
 
 router.post("/razorpay/:webhookId", express.raw({ type: "*/*" }), async (req: any, res: any) => {
@@ -120,9 +120,19 @@ router.post("/razorpay/:webhookId", express.raw({ type: "*/*" }), async (req: an
 
     const event = adapter.verifyWebhook(req, webhook.secret);
 
+    const eventId =
+      event.payload?.payment?.entity?.id ||
+      event.payload?.order?.entity?.id ||
+      event.payload?.refund?.entity?.id;
+
+    if (!eventId) {
+      console.warn("Unknown Razorpay event:", event.event);
+      return res.status(200).json({ ignored: true });
+    }
+
     try {
       await webhookEvent.create({
-        eventId: event.id,
+        eventId,
         provider: "razorpay",
         webhookId,
       });
@@ -171,7 +181,7 @@ router.post("/stripe/:webhookId", async (req: any, res: any) => {
       throw err;
     }
 
-    // await adapter.normalizeWebhook(event);
+    await adapter.normalizeWebhook(event);
 
     return res.status(200).json({ success: "Signature verified succesfully" });
   } catch (err) {
@@ -180,5 +190,23 @@ router.post("/stripe/:webhookId", async (req: any, res: any) => {
   }
 
 });
+
+router.delete("/remove/:gateway", verifyToken, async (req, res) => {
+  try {
+    const { gateway } = req.params;
+    const userId = req.userId;
+
+    const deleted = await webhookConfig.findOneAndDelete({ userId, provider: gateway });
+
+    if (!deleted) return res.status(404).json({ message: "Gateway not found" });
+
+    res.status(200).json({
+      message: "Webhook removed successfully",
+      connected: false
+    });
+  } catch (err) {
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+})
 
 export default router;
