@@ -120,9 +120,19 @@ router.post("/razorpay/:webhookId", express.raw({ type: "*/*" }), async (req: an
 
     const event = adapter.verifyWebhook(req, webhook.secret);
 
+    const eventId =
+      event.payload?.payment?.entity?.id ||
+      event.payload?.order?.entity?.id ||
+      event.payload?.refund?.entity?.id;
+
+    if (!eventId) {
+      console.warn("Unknown Razorpay event:", event.event);
+      return res.status(200).json({ ignored: true });
+    }
+
     try {
       await webhookEvent.create({
-        eventId: event.id,
+        eventId,
         provider: "razorpay",
         webhookId,
       });
