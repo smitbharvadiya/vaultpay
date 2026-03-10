@@ -127,6 +127,38 @@ const Webhook = () => {
     fetchStatus();
   }, []);
 
+  const removeWebhook = async (provider) => {
+    try {
+      const res = await fetch(
+        `https://vaultpay-4ez5.onrender.com/webhook/remove/${provider}`,
+        {
+          method: "DELETE",
+          credentials: "include",
+        }
+      );
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        alert(data.message || "Failed to remove webhook");
+        return;
+      }
+
+      setConnections(prev => ({
+        ...prev,
+        [provider]: data.connected,
+      }));
+
+      setActiveWebhook(null);
+      setWebhookURL("");
+      setWebhookSecret("");
+
+    } catch (err) {
+      console.error(err);
+      alert("Failed to remove webhook");
+    }
+  };
+
   const handleCopy = (text, field) => {
     navigator.clipboard.writeText(text);
     setCopiedField(field);
@@ -153,8 +185,8 @@ const Webhook = () => {
             const connected = connections[key];
 
             return (
-              <div 
-                key={g.name} 
+              <div
+                key={g.name}
                 className="bg-white border border-zinc-200 rounded-[24px] p-6 flex flex-col transition hover:border-zinc-300" >
                 {/* Header */}
                 <div className="flex justify-between items-start mb-6">
@@ -178,20 +210,25 @@ const Webhook = () => {
                 </p>
 
                 {/* Action */}
-                <button
-                  disabled={connected}
-                  onClick={() => {
-                    setActiveWebhook(key);
-                    setWebhookSecret("");
-                    if (!connected) generateCredentials(key);
-                  }}
-                  className={`mt-auto w-full py-3 rounded-xl font-bold transition cursor-pointer ${connected
-                    ? "bg-zinc-100 text-zinc-500"
-                    : "bg-zinc-900 text-white hover:bg-black"
-                    }`}
-                >
-                  {connected ? "Connected" : "Generate Webhook"}
-                </button>
+                {connected ? (
+                  <button
+                    onClick={() => removeWebhook(key)}
+                    className="mt-auto w-full py-3 rounded-xl font-bold bg-red-500 text-white hover:bg-red-600 transition"
+                  >
+                    Disconnect Webhook
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => {
+                      setActiveWebhook(key);
+                      setWebhookSecret("");
+                      generateCredentials(key);
+                    }}
+                    className="mt-auto w-full py-3 rounded-xl font-bold bg-zinc-900 text-white hover:bg-black transition"
+                  >
+                    Generate Webhook
+                  </button>
+                )}
               </div>
             )
           })}

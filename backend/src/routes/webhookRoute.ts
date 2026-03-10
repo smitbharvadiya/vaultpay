@@ -181,4 +181,22 @@ router.post("/stripe/:webhookId", async (req: any, res: any) => {
 
 });
 
+router.delete("/remove/:gateway", verifyToken, async (req, res) => {
+  try {
+    const { gateway } = req.params;
+    const userId = req.userId;
+
+    const deleted = await webhookConfig.findOneAndDelete({ userId, provider: gateway });
+
+    if (!deleted) return res.status(404).json({ message: "Gateway not found" });
+
+    res.status(200).json({
+      message: "Webhook removed successfully",
+      connected: false
+    });
+  } catch (err) {
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+})
+
 export default router;
